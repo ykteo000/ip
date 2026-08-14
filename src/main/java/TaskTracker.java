@@ -8,7 +8,15 @@
  * @version 1.0
  */
 public class TaskTracker {
-	public static void main(String[] args) {
+	private final UserInterface ui;
+	private final TaskList taskList;
+
+	public TaskTracker() {
+		this.ui = new UserInterface();
+		this.taskList = new TaskList();
+	}
+
+	public void run() {
 		
 		UserInterface ui = new UserInterface();
 		ui.showWelcome();
@@ -16,13 +24,19 @@ public class TaskTracker {
 
 			String input = ui.readCommand();
 
-			if (input.equalsIgnoreCase("bye")){
+			if (input.equalsIgnoreCase("bye")) {
 				break;
+			} else if (input.equalsIgnoreCase("list")) {
+				ui.showMessage(taskList.getFormattedList());
+			} else {
+				taskList.add(input);
+				ui.showMessage("added: " + input);
 			}
-
-			ui.showMessage(input);
 		}
-
 		ui.showGoodbye();
+	}
+
+	public static void main(String[] args) {
+		new TaskTracker().run();
 	}
 }
