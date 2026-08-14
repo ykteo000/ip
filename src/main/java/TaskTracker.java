@@ -9,33 +9,57 @@
  */
 public class TaskTracker {
 	private final UserInterface ui;
-	private final TaskList taskList;
+	private final TaskList tasksList;
 
 	public TaskTracker() {
 		this.ui = new UserInterface();
-		this.taskList = new TaskList();
+		this.tasksList = new TaskList();
 	}
 
 	public void run() {
-		
-		UserInterface ui = new UserInterface();
 		ui.showWelcome();
-		while (true) {
+		boolean isRunning = true;
 
-			String input = ui.readCommand();
-
-			if (input.equalsIgnoreCase("bye")) {
-				break;
-			} else if (input.equalsIgnoreCase("list")) {
-				ui.showMessage(taskList.getFormattedList());
-			} else {
-				String response = taskList.add(input);
-				ui.showMessage(response);
-			}
+		while (isRunning) {
+			String input = ui.readCommand().trim();
+			isRunning = processCommand(input);	
 		}
-		ui.showGoodbye();
 	}
 
+	private boolean processCommand(String input) {
+		// Exact single argument command checking
+		if (input.isEmpty()) {
+			return true;
+		}
+
+		if (input.equalsIgnoreCase("bye")) {
+			ui.showGoodbye();
+			return false;
+		}
+
+		if (input.equalsIgnoreCase("list")) {
+			ui.showMessage(tasksList.getFormattedList());
+			return true;
+		}
+
+		// (possible) multi-word command routing with validation checks
+		String[] parts = input.split(" ", 2);
+		String command = parts[0].toLowerCase();
+		String argument = parts.length > 1 ? parts[1].trim() : "";
+
+		switch (command) {
+			case "mark":
+				ui.showMessage(tasksList.setTaskStatus(argument, true));
+				break;
+			case "unmark":
+				ui.showMessage(tasksList.setTaskStatus(argument, false));
+				break;
+			default:
+				ui.showMessage(tasksList.add(input));
+				break;
+		}
+		return true;
+	}
 	public static void main(String[] args) {
 		new TaskTracker().run();
 	}
