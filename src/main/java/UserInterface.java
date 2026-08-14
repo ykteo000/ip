@@ -15,7 +15,7 @@ public class UserInterface{
 	public static final String INDENT_4 = "    ";
 	
 	// Define a divider line using underscores
-	private static final String DIVIDER = "_".repeat(60);
+	private static final String DIVIDER = "_".repeat(99);
 
 	// Define the TaskTracker banner logo using external tool from manytools
 	// Gemini AI was used to generate the specific formatting for the banner
