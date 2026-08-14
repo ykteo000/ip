@@ -4,7 +4,8 @@ public class TaskTracker {
 		// Define a divider line using underscores
 		String line = "_".repeat(60);
        
-		// Define the TaskTracker banner logo
+		// Define the TaskTracker banner logo using external tool from manytools
+		// Gemini AI was used to generate the specific formatting for the banner
 		String banner = "  ______           __                 \n"
                     + " /_  ______ ______/ /__                \n"
                     + "  / / / __ `/ ___/ //_/                \n"
