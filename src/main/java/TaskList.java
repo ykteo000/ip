@@ -6,21 +6,26 @@ import java.util.stream.IntStream;
 /**
  * Stores user input to a list as an ArrayList<String>.
  *
- * Array stores a maximum of 100 elements.
  * Provides operations to view and edit elements.
  * 
  * @author Yong Kang Teo
  * @version 1.0
  */
 public class TaskList {
+	private static final int MAX_TASKS = 100;
 	private final List<String> tasks;
 
 	public TaskList() {
 		this.tasks = new ArrayList<>();
 	}
 
-	public void add(String task) {
-		tasks.add(task);
+	public String add(String task) {
+		if (tasks.size() >= MAX_TASKS) {
+			return "Task list is full, remove any task first!";
+		} else {
+			tasks.add(task);
+			return "added: " + task;
+		}
 	}
 
 	public String getFormattedList() {

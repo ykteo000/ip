@@ -2,7 +2,7 @@ import java.util.Scanner;
 /**
  * Handles i/o by end user.
  *
- * showWelcome, showMEssage and showGoodbye methods used.
+ * showWelcome, showMessage and showGoodbye methods used.
  * Easier readibility for future potential changes.
  * 
  * @author Yong Kang Teo

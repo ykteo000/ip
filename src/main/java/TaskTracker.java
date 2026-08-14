@@ -29,8 +29,8 @@ public class TaskTracker {
 			} else if (input.equalsIgnoreCase("list")) {
 				ui.showMessage(taskList.getFormattedList());
 			} else {
-				taskList.add(input);
-				ui.showMessage("added: " + input);
+				String response = taskList.add(input);
+				ui.showMessage(response);
 			}
 		}
 		ui.showGoodbye();
