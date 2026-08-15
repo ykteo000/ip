@@ -23,17 +23,22 @@ public class TaskTracker {
 
 		while (isRunning) {
 			String input = ui.readCommand().trim();
-			isRunning = processCommand(input);	
+			try {
+				isRunning = processCommand(input);
+			} catch (TaskTrackerException e) {
+				ui.showMessage(e.getMessage());
+			}
 		}
 	}
 
 	/**
      	* Processes a single user input command and executes the corresponding action.
      	*
-     	* @param input User input string to process.
+     	* @param input User input string to process. Initial command is case-insensitive.
      	* @return Returns true if application should continue running, false if it should exit.
+	* @throws TaskTrackerException If input parsing fails or command is unrecognized.
      	*/
-	private boolean processCommand(String input) {
+	private boolean processCommand(String input) throws TaskTrackerException {
 		// Exact single argument command checking
 		if (input.isEmpty()) {
 			return true;
@@ -56,32 +61,33 @@ public class TaskTracker {
 
 		switch (command) {
 			case "mark":
-				ui.showMessage(taskList.setTaskStatus(argument, true));
+				int markIndex = Parser.parseIndex(argument);
+				ui.showMessage(taskList.setTaskStatus(markIndex, true));
 				break;
 			case "unmark":
-				ui.showMessage(taskList.setTaskStatus(argument, false));
+				int unmarkIndex = Parser.parseIndex(argument);
+				ui.showMessage(taskList.setTaskStatus(unmarkIndex, false));
 				break;
 			case "todo":
-			    Task toDoTask = new ToDo(argument);
-			    ui.showMessage(taskList.add(toDoTask));
-			    break;
+			    	ToDo toDo = Parser.parseToDo(argument);
+			    	ui.showMessage(taskList.add(toDo));
+			    	break;
 			case "deadline":
-				// Split "return book /by Sunday" into description and date
-		    		String[] deadlineParts = argument.split(" /by ", 2);
-		    		Task deadline = new Deadline(deadlineParts[0].trim(), deadlineParts[1].trim());
-		    		ui.showMessage(taskList.add(deadline));
-		    		break;
+			    	Deadline deadline = Parser.parseDeadline(argument);
+			    	ui.showMessage(taskList.add(deadline));
+			    	break;
 			case "event":
-				// Split "project meeting /from Mon 2pm /to 4pm" 
-			    	String[] fromParts = argument.split(" /from ", 2);
-			    	String[] toParts = fromParts[1].split(" /to ", 2);
-			    	Task event = new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim());
+			    	Event event = Parser.parseEvent(argument);
 			    	ui.showMessage(taskList.add(event));
 			    	break;
-			default:
-				Task taskToAdd = new Task(input);
-				ui.showMessage(taskList.add(taskToAdd));
+			case "--help":
+			case "help":
+				ui.showHelp();
 				break;
+			default:
+				throw new TaskTrackerException("OOPS!! I'm sorry :ccc\n"
+						+ "I don't know what that command means ;(\n\n"
+						+ "Type 'help' to see available commands.\n");
 		}
 		return true;
 	}
