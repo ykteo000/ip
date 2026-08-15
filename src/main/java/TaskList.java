@@ -4,41 +4,59 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Stores user input to a list as an ArrayList<String>.
- *
- * Provides operations to view and edit elements.
- * 
- * @author Yong Kang Teo
- * @version 1.0
+ * Represents a collection of tasks and handles task-level operations such as adding,
+ * formatting output, and updating task completion status.
  */
 public class TaskList {
+	// Set a limit to 100 to prevent user misuse.
 	private static final int MAX_TASKS = 100;
-	private final List<Task> tasksList;
-
+	private final List<Task> taskList;
+	
+	/**
+     	* Initializes an empty TaskList.
+     	*/
 	public TaskList() {
-		this.tasksList = new ArrayList<>();
+		this.taskList = new ArrayList<>();
 	}
 
-	public String add(String description) {
-		if (tasksList.size() >= MAX_TASKS) {
+	/**
+     	* Adds a task to the list if space permits.
+     	*
+     	* @param task Task to be added.
+     	* @return Message confirming addition or warning that list is full.
+     	*/
+	public String add(Task task) {
+		if (taskList.size() >= MAX_TASKS) {
 			return "Task list is full, remove any task first!";
 		} else {
-			Task newTask = new Task(description);
-			tasksList.add(newTask);
-			return "added: " + description;
+			taskList.add(task);
+			return "added: " + task + "\nNow you have "
+					+ taskList.size() + " tasks in the list!";
 		}
 	}
 
+	/**
+     	* Generates a formatted string representing all tasks currently stored in the list.
+     	*
+     	* @return Formatted string of all tasks with 1-based indexing.
+     	*/
 	public String getFormattedList() {
-		if (tasksList.isEmpty()) {
+		if (taskList.isEmpty()) {
 			return "No tasks added yet, please add a task first!";
 		}
 
-		return IntStream.range(0, tasksList.size())
-            			.mapToObj(i -> (i + 1) + ". " + tasksList.get(i))
+		return IntStream.range(0, taskList.size())
+            			.mapToObj(i -> (i + 1) + ". " + taskList.get(i))
             			.collect(Collectors.joining("\n"));
 	}
 
+	/**
+     	* Sets the status of a task identified by its string index.
+     	*
+     	* @param argument 1-based task index string entered by user.
+     	* @param isDone True to mark as done, false to mark as undone.
+     	* @return Confirmation message or error description if index is invalid.
+     	*/
 	public String setTaskStatus(String argument, boolean isDone) {
 		// Check if argument is empty or " "
 		if (argument.isEmpty() || argument.contains(" ")) {
@@ -51,11 +69,11 @@ public class TaskList {
 			int zeroBasedIndex = index - 1;
 
 			// Check if index is out of bounds
-			if (zeroBasedIndex < 0 || zeroBasedIndex >= tasksList.size()) {
+			if (zeroBasedIndex < 0 || zeroBasedIndex >= taskList.size()) {
 				return "Invalid task number! Check your index!";
 			}
 
-			Task taskToUpdate = tasksList.get(zeroBasedIndex);
+			Task taskToUpdate = taskList.get(zeroBasedIndex);
 
 			// Perform action based off boolean flag
 			if (isDone) {

@@ -1,18 +1,11 @@
 import java.util.Scanner;
 /**
- * Handles i/o by end user.
- *
- * showWelcome, showMessage and showGoodbye methods used.
- * Easier readibility for future potential changes.
- * 
- * @author Yong Kang Teo
- * @version 1.0
+ * Handles all user interface operations including reading input and displaying messages.
  */
-
-public class UserInterface{	
+public class UserInterface {	
 	
 	// Define indent of 4 spaces
-	public static final String INDENT_4 = "    ";
+	private static final String INDENT_4 = "    ";
 	
 	// Define a divider line using underscores
 	private static final String DIVIDER = "_".repeat(99);
@@ -32,11 +25,16 @@ public class UserInterface{
 	// Creates a scanner object to read user's inputs
 	private final Scanner scanner;
 
+	/**
+     	* Initializes a new UserInterface instance with a System.in scanner.
+     	*/
 	public UserInterface() {
 		this.scanner = new Scanner(System.in);
 	}
 
-	// Welcome message abstracted from TaskTracker.java and included here as UI Object. 
+	/**
+     	* Displays the welcome message and application banner.
+     	*/ 
 	public void showWelcome() {
 		System.out.println(DIVIDER);
 		System.out.println(BANNER);
@@ -46,12 +44,20 @@ public class UserInterface{
 		System.out.println(DIVIDER);
 	}
 
-	// Reads user input from terminal
+	/**
+     	* Reads a line of command input from the terminal.
+     	*
+     	* @return Returns the raw command string entered by the user.
+     	*/
 	public String readCommand() {
 		return scanner.nextLine();
 	}
 
-	// Wraps output messages inside divider lines
+	/**
+     	* Wraps and prints a message inside divider lines with standard indentation.
+     	*
+     	* @param message Message content to display.
+     	*/
 	public void showMessage(String message) {
 		System.out.println(DIVIDER);
 		String indentedMessage = INDENT_4 + message.replace("\n", "\n" + INDENT_4);
@@ -59,7 +65,9 @@ public class UserInterface{
 		System.out.println(DIVIDER);
 	}
 
-	// Exits system upon bye command input by user
+	/**
+     	* Displays the farewell message upon exiting the application.
+     	*/
 	public void showGoodbye() {
 		System.out.println(DIVIDER);
                 System.out.println(INDENT_4 + "Bye!!! Cya soon!\n");
