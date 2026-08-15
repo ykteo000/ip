@@ -18,13 +18,15 @@ public class Parser {
 	 * @throws TaskTrackerException If the argument is empty or cannot be parsed into an integer.
 	 */
 	public static int parseIndex(String argument) throws TaskTrackerException {
-		String trimmed = validateNonEmpty(argument, "OOPS!! specify a task number.\n"
-				+ "Format: mark <index> OR unmark <index>");
+		String trimmed = validateNonEmpty(argument, "OOPS!! specify a task index number.\n"
+				+ "Format: mark <index> | unmark <index> | delete <index>\n"
+				+ "Index range: 1-100");
 		try {
 			return Integer.parseInt(trimmed);
 		} catch (NumberFormatException e) {
 			throw new TaskTrackerException("OOPS!! task number must be a valid integer.\n"
-					+ "Format: mark <index> OR unmark <index> ; index range: 0-100");
+					+ "Format: mark <index> | unmark <index> | delete <index>\n"
+					+ "Index range: 1-100");
 		}
 	}
 

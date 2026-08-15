@@ -80,12 +80,16 @@ public class TaskTracker {
 			    	Event event = Parser.parseEvent(argument);
 			    	ui.showMessage(taskList.add(event));
 			    	break;
+			case "delete":
+    				int deleteIndex = Parser.parseIndex(argument);
+    				ui.showMessage(taskList.deleteTask(deleteIndex));
+    				break;
 			case "--help":
 			case "help":
 				ui.showHelp();
 				break;
 			default:
-				throw new TaskTrackerException("OOPS!! I'm sorry :ccc\n"
+				throw new TaskTrackerException("OOPS!! I'm sowwyyy :ccc\n"
 						+ "I don't know what that command means ;(\n\n"
 						+ "Type 'help' to see available commands.\n");
 		}

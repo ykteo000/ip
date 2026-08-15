@@ -37,6 +37,24 @@ public class TaskList {
 	}
 
 	/**
+	 * Deletes a task from the list by its 1-based index.
+	 *
+	 * @param index 1-based index of the task to remove.
+	 * @return Confirmation message of the deleted task.
+	 * @throws TaskTrackerException If the task index is out of bounds.
+	 */
+	public String deleteTask(int index) throws TaskTrackerException {
+		if (index < 1 || index > taskList.size()) {
+			throw new TaskTrackerException("OOPS!! Task number " + index + " does not exist.");
+		}
+
+		Task removedTask = taskList.remove(index - 1);
+		return "Noted. I've removed this task:\n"
+			+ "  " + removedTask + "\n"
+			+ "Now you have " + taskList.size() + " tasks in the list.";
+	}
+
+	/**
 	 * Generates a formatted string representing all tasks currently stored in the list.
 	 *
 	 * @return Formatted string of all tasks with 1-based indexing, else tells user list is empty.

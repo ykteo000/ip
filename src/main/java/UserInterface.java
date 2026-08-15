@@ -72,6 +72,7 @@ public class UserInterface {
 	public void showGoodbye() {
 		System.out.println(DIVIDER);
 		System.out.println(INDENT_4 + "Baiiiiiii!!! Cya soon!\n");
+		System.out.println(BANNER);
 		System.out.println(DIVIDER);
 	}
 
@@ -87,6 +88,7 @@ public class UserInterface {
 				+ "  - event <desc> /from <start> /to <end> : Adds an event task\n"
 				+ "  - mark <index> : Marks a task as done\n"
 				+ "  - unmark <index> : Marks a task as undone\n"
+				+ "  - delete <index> : Deletes a task from the list\n"
 				+ "  - bye : Exits the program";
     		showMessage(helpMessage);
 	}
