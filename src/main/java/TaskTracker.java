@@ -3,22 +3,32 @@
  * Manages the user interaction loop until the user chooses to exit.
  */
 public class TaskTracker {
+	private static final String DEFAULT_FILE_PATH = "./data/tasks.txt";
 	private final UserInterface ui;
-	private final TaskList taskList;
+	private final Storage storage;
+	private TaskList taskList;
 
 	/**
-     	* Initializes a new TaskTracker instance with initialized UI and TaskList.
-     	*/
+	 * Initializes a new TaskTracker instance with initialized UI and TaskList.
+	 */
 	public TaskTracker() {
 		this.ui = new UserInterface();
-		this.taskList = new TaskList();
+		this.storage = new Storage(DEFAULT_FILE_PATH);
 	}
 
 	/**
-     	* Runs the main command processing loop until the exit command is received.
-     	*/
+	 * Runs the main command processing loop until the exit command is received.
+	 */
 	public void run() {
 		ui.showWelcome();
+
+		try {
+			taskList = new TaskList(storage.load());
+		} catch (TaskTrackerException e) {
+			ui.showMessage(e.getMessage());
+			taskList = new TaskList();
+		}
+
 		boolean isRunning = true;
 
 		while (isRunning) {
@@ -32,12 +42,12 @@ public class TaskTracker {
 	}
 
 	/**
-     	* Processes a single user input command and executes the corresponding action.
-     	*
-     	* @param input User input string to process. Initial command is case-insensitive.
-     	* @return Returns true if application should continue running, false if it should exit.
-	* @throws TaskTrackerException If input parsing fails or command is unrecognized.
-     	*/
+	 * Processes a single user input command and executes the corresponding action.
+	 *
+	 * @param input User input string to process. Initial command is case-insensitive.
+	 * @return Returns true if application should continue running, false if it should exit.
+	 * @throws TaskTrackerException If input parsing fails or command is unrecognized.
+	 */
 	private boolean processCommand(String input) throws TaskTrackerException {
 		// Exact single argument command checking
 		if (input.isEmpty()) {
@@ -69,21 +79,21 @@ public class TaskTracker {
 				ui.showMessage(taskList.setTaskStatus(unmarkIndex, false));
 				break;
 			case "todo":
-			    	ToDo toDo = Parser.parseToDo(argument);
-			    	ui.showMessage(taskList.add(toDo));
-			    	break;
+				ToDo toDo = Parser.parseToDo(argument);
+				ui.showMessage(taskList.add(toDo));
+				break;
 			case "deadline":
-			    	Deadline deadline = Parser.parseDeadline(argument);
-			    	ui.showMessage(taskList.add(deadline));
-			    	break;
+				Deadline deadline = Parser.parseDeadline(argument);
+				ui.showMessage(taskList.add(deadline));
+				break;
 			case "event":
-			    	Event event = Parser.parseEvent(argument);
-			    	ui.showMessage(taskList.add(event));
-			    	break;
+				Event event = Parser.parseEvent(argument);
+				ui.showMessage(taskList.add(event));
+				break;
 			case "delete":
-    				int deleteIndex = Parser.parseIndex(argument);
-    				ui.showMessage(taskList.deleteTask(deleteIndex));
-    				break;
+				int deleteIndex = Parser.parseIndex(argument);
+				ui.showMessage(taskList.deleteTask(deleteIndex));
+				break;
 			case "--help":
 			case "help":
 				ui.showHelp();
@@ -93,12 +103,13 @@ public class TaskTracker {
 						+ "I don't know what that command means ;(\n\n"
 						+ "Type 'help' to see available commands.\n");
 		}
+		storage.save(taskList.getTasks());
 		return true;
 	}
 
 	/**
-     	* Starts the Task Tracker application.
-     	*/
+	 * Starts the Task Tracker application.
+	 */
 	public static void main(String[] args) {
 		new TaskTracker().run();
 	}

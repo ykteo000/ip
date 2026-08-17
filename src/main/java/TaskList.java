@@ -20,6 +20,20 @@ public class TaskList {
 	}
 
 	/**
+	 * Initializes a TaskList with pre-loaded tasks (from Storage).
+	 */
+	public TaskList(List<Task> savedTasks) {
+		this.taskList = savedTasks;
+	}
+
+	/**
+	 * Returns the underlying list of tasks for saving.
+	 */
+	public List<Task> getTasks() {
+		return this.taskList;
+	}
+
+	/**
 	 * Adds a task to the list if space permits.
 	 *
 	 * @param task Task to be added.
