@@ -1,6 +1,6 @@
 /**
  * Handles parsing and validation of raw user command strings.
- *
+ *OB
  * Note: Gemini AI was used substantially at this section to handle input edge cases.
  * Initial idea to create a dedicated parser class was by me, further refinement by AI.
  * Prompt "I currently have these methods in TaskTracker.java but I want to move them."
@@ -18,15 +18,11 @@ public class Parser {
 	 * @throws TaskTrackerException If the argument is empty or cannot be parsed into an integer.
 	 */
 	public static int parseIndex(String argument) throws TaskTrackerException {
-		String trimmed = validateNonEmpty(argument, "OOPS!! specify a task index number.\n"
-				+ "Format: mark <index> | unmark <index> | delete <index>\n"
-				+ "Index range: 1-100");
+		String trimmed = validateNonEmpty(argument, ErrorMessage.MISSING_INDEX);
 		try {
 			return Integer.parseInt(trimmed);
 		} catch (NumberFormatException e) {
-			throw new TaskTrackerException("OOPS!! task number must be a valid integer.\n"
-					+ "Format: mark <index> | unmark <index> | delete <index>\n"
-					+ "Index range: 1-100");
+			throw new TaskTrackerException(ErrorMessage.INVALID_INDEX);
 		}
 	}
 
@@ -38,8 +34,7 @@ public class Parser {
 	 * @throws TaskTrackerException If the description is empty or missing.
 	 */
 	public static ToDo parseToDo(String argument) throws TaskTrackerException {
-		String description = validateNonEmpty(argument,"OOPS!! todo description cannot be empty.\n"
-				+ "Format: todo <description>");
+		String description = validateNonEmpty(argument,ErrorMessage.EMPTY_TODO);
 		
 		return new ToDo(description);
 	}
@@ -52,12 +47,9 @@ public class Parser {
 	 * @throws TaskTrackerException If the description or date is empty, or if '/by' is missing.
 	 */
 	public static Deadline parseDeadline(String argument) throws TaskTrackerException {
-		validateNonEmpty(argument, "OOPS!! deadline description cannot be empty.\n"
-				+ "Format: deadline <description> /by <due date/ unknown date>");
+		validateNonEmpty(argument, ErrorMessage.EMPTY_DEADLINE);
 
-		String[] parts = splitArgument(argument," /by ", 
-				"OOPS!! specify deadline description and date using '/by'.\n"
-				+ "Format: deadline <description> /by <due date/ unknown date>");
+		String[] parts = splitArgument(argument," /by ", ErrorMessage.MISSING_BY);
 
 		return new Deadline(parts[0], parts[1]);
 	}
@@ -70,16 +62,11 @@ public class Parser {
 	 * @throws TaskTrackerException If any field is empty, or if '/from' or '/to' specifiers are missing.
 	 */
 	public static Event parseEvent(String argument) throws TaskTrackerException {
-		validateNonEmpty(argument, "OOPS!! event description cannot be empty.\n"
-				+ "Format: event <description> /from <start> /to <end>");
+		validateNonEmpty(argument, ErrorMessage.EMPTY_EVENT);
 
-		String[] fromParts = splitArgument(argument," /from ", 
-				"OOPS!! Please specify a valid start time using '/from'.\n" 
-				+ "Format: event <description> /from <start> /to <end>");
+		String[] fromParts = splitArgument(argument," /from ", ErrorMessage.MISSING_FROM);
 
-		String[] toParts = splitArgument(fromParts[1]," /to ", 
-				"OOPS!! Please specify a valid end time using '/to'.\n" 
-				+ "Format: event <description> /from <start> /to <end>");
+		String[] toParts = splitArgument(fromParts[1]," /to ", ErrorMessage.MISSING_TO);
 		
 		return new Event(fromParts[0], toParts[0], toParts[1]);
 	}

@@ -24,9 +24,7 @@ public enum CommandType {
 		try {
 			return CommandType.valueOf(commandWord.toUpperCase());
 		} catch (IllegalArgumentException e) {
-			throw new TaskTrackerException("OOPS!! I'm sowwyyy :ccc\n"
-					+ "I don't know what that command means ;(\n\n"
-					+ "Type 'help' to see available commands.\n");
+			throw new TaskTrackerException(ErrorMessage.UNKNOWN_COMMAND);
 		}
 	}
 }
