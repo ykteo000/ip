@@ -54,54 +54,46 @@ public class TaskTracker {
 			return true;
 		}
 
-		if (input.equalsIgnoreCase("bye")) {
-			ui.showGoodbye();
-			return false;
-		}
-
-		if (input.equalsIgnoreCase("list")) {
-			ui.showMessage(taskList.getFormattedList());
-			return true;
-		}
-
 		// (possible) multi-word command routing with validation checks
 		String[] parts = input.split(" ", 2);
-		String command = parts[0].toLowerCase();
+		String commandWord = parts[0].toLowerCase();
 		String argument = parts.length > 1 ? parts[1].trim() : "";
 
+		CommandType command = CommandType.from(commandWord);
 		switch (command) {
-			case "mark":
+			case BYE:
+				ui.showGoodbye();
+				return false;
+			case LIST:
+				ui.showMessage(taskList.getFormattedList());
+				break;
+			case MARK:
 				int markIndex = Parser.parseIndex(argument);
 				ui.showMessage(taskList.setTaskStatus(markIndex, true));
 				break;
-			case "unmark":
+			case UNMARK:
 				int unmarkIndex = Parser.parseIndex(argument);
 				ui.showMessage(taskList.setTaskStatus(unmarkIndex, false));
 				break;
-			case "todo":
+			case TODO:
 				ToDo toDo = Parser.parseToDo(argument);
 				ui.showMessage(taskList.add(toDo));
 				break;
-			case "deadline":
+			case DEADLINE:
 				Deadline deadline = Parser.parseDeadline(argument);
 				ui.showMessage(taskList.add(deadline));
 				break;
-			case "event":
+			case EVENT:
 				Event event = Parser.parseEvent(argument);
 				ui.showMessage(taskList.add(event));
 				break;
-			case "delete":
+			case DELETE:
 				int deleteIndex = Parser.parseIndex(argument);
 				ui.showMessage(taskList.deleteTask(deleteIndex));
 				break;
-			case "--help":
-			case "help":
+			case HELP:
 				ui.showHelp();
 				break;
-			default:
-				throw new TaskTrackerException("OOPS!! I'm sowwyyy :ccc\n"
-						+ "I don't know what that command means ;(\n\n"
-						+ "Type 'help' to see available commands.\n");
 		}
 		storage.save(taskList.getTasks());
 		return true;
