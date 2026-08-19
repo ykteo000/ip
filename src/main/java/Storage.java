@@ -5,20 +5,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Handles the loading and saving of task data to and from a local file.
+ */
 public class Storage {
 	private static final String DEFAULT_FILE_PATH = "./data/tasks.txt";
 	private final String filePath;
 
+	/**
+	 * Constructs a Storage instance with the default file path.
+	 */
 	public Storage() {
 		this(DEFAULT_FILE_PATH);
 	}
 
+	/**
+	 * Constructs a Storage instance with the specified file path.
+	 *
+	 * @param filePath The path where tasks are saved.
+	 */
 	public Storage(String filePath) {
 		this.filePath = filePath;
 	}
 
 	/**
-	 * Saves the list of tasks to the hard drive file.
+	 * Saves the provided list of tasks to the storage file.
+	 * Creates any missing parent directories before writing.
+	 *
+	 * @param tasks The list of tasks to be saved.
+	 * @throws TaskTrackerException If an I/O error occurs while writing to the file.
 	 */
 	public void save(List<Task> tasks) throws TaskTrackerException {
 		File file = new File(filePath);
@@ -37,7 +52,10 @@ public class Storage {
 
 
 	/**
-	 * Loads tasks from the hard drive file upon app startup.
+	 * Loads tasks from the storage file upon application startup.
+	 *
+	 * @return A list of tasks parsed from the file, or an empty list if no save file exists.
+	 * @throws TaskTrackerException If the file contains invalid formatting or I/O error occurs.
 	 */
 	public List<Task> load() throws TaskTrackerException {
 		List<Task> loadedTasks = new ArrayList<>();
@@ -66,7 +84,11 @@ public class Storage {
 	}
 
 	/**
-	 * Helper method to convert a saved file line back into a Task object.
+	 * Converts a single line from the save file into a corresponding {@code Task} object.
+	 *
+	 * @param line A single pipe-delimited line from the storage file.
+	 * @return The instantiated {@code Task} object with its completion status updated.
+	 * @throws TaskTrackerException If the task type is unrecognized or fields are missing.
 	 */
 	private Task parseTaskFromLine(String line) throws TaskTrackerException {
 		String[] parts = line.split(" \\| ");
