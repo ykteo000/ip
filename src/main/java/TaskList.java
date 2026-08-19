@@ -59,7 +59,7 @@ public class TaskList {
 	 */
 	public String deleteTask(int index) throws TaskTrackerException {
 		if (index < 1 || index > taskList.size()) {
-			throw new TaskTrackerException(Message.ERR_INVALID_INDEX);
+			throw new TaskTrackerException(Message.ERR_OUT_OF_BOUNDS(taskList.size()));
 		}
 
 		Task removedTask = taskList.remove(index - 1);
@@ -92,17 +92,17 @@ public class TaskList {
 	 */
 	public String setTaskStatus(int index, boolean isDone) throws TaskTrackerException {
 		if (index < 1 || index > taskList.size()) {
-			throw new TaskTrackerException(Message.ERR_INVALID_INDEX);
+			throw new TaskTrackerException(Message.ERR_OUT_OF_BOUNDS(taskList.size()));
 		}
 
 		Task taskToUpdate = taskList.get(index - 1);
 
 		if (isDone) {
 			taskToUpdate.markAsDone();
-			return Message.MSG_TASK_MARKED + "\n " + taskToUpdate;
+			return Message.MSG_TASK_MARKED + " " + taskToUpdate;
 		} else {
 			taskToUpdate.markAsUndone();
-			return Message.MSG_TASK_UNMARKED + "\n " + taskToUpdate;
+			return Message.MSG_TASK_UNMARKED + " " + taskToUpdate;
 		}
 	}
 }

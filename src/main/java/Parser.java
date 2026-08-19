@@ -35,7 +35,7 @@ public class Parser {
 	 */
 	public static ToDo parseToDo(String argument) throws TaskTrackerException {
 		String description = validateNonEmpty(argument,Message.ERR_EMPTY_TODO);
-		
+
 		return new ToDo(description);
 	}
 
@@ -56,21 +56,41 @@ public class Parser {
 
 	/**
 	 * Parses argument into an Event object.
+	 * Note: Gemini AI used to make the parseEvent validation better to handle improper user input.
 	 *
 	 * @param argument The raw input string containing the event description, start time, and end time.
 	 * @return A new Event instance created from the parsed description, start time, and end time.
 	 * @throws TaskTrackerException If any field is empty, or if '/from' or '/to' specifiers are missing.
 	 */
 	public static Event parseEvent(String argument) throws TaskTrackerException {
+		// 1. Check if argument exists at all
 		validateNonEmpty(argument, Message.ERR_EMPTY_EVENT);
 
-		String[] fromParts = splitArgument(argument," /from ", Message.ERR_MISSING_FROM);
+		// 2. Ensure '/from' exists and description before it is non-empty
+		if (!argument.contains(" /from ")) {
+			throw new TaskTrackerException(Message.ERR_MISSING_FROM);
+		}
+		String[] fromParts = argument.split(" /from ", 2);
+		if (fromParts[0].trim().isEmpty()) {
+			throw new TaskTrackerException(Message.ERR_EMPTY_EVENT);
+		}
 
-		String[] toParts = splitArgument(fromParts[1]," /to ", Message.ERR_MISSING_TO);
-		
-		return new Event(fromParts[0], toParts[0], toParts[1]);
+		// 3. Ensure '/to' exists and '/from' value is non-empty
+		if (!fromParts[1].contains(" /to ")) {
+			throw new TaskTrackerException(Message.ERR_MISSING_TO);
+		}
+		String[] toParts = fromParts[1].split(" /to ", 2);
+		if (toParts[0].trim().isEmpty()) {
+			throw new TaskTrackerException(Message.ERR_MISSING_FROM);
+		}
+
+		// 4. Ensure '/to' value is non-empty
+		if (toParts[1].trim().isEmpty()) {
+			throw new TaskTrackerException(Message.ERR_MISSING_TO);
+		}
+
+		return new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim());
 	}
-
 	/**
 	 * Ensures an argument string is non-empty after trimming.
 	 *
@@ -81,11 +101,11 @@ public class Parser {
 	 */
 	private static String validateNonEmpty(String argument, String errorMessage)
 			throws TaskTrackerException {
-		if (argument == null || argument.trim().isEmpty()) {
-			throw new TaskTrackerException(errorMessage);
-		}
-		
-		return argument.trim();
+			if (argument == null || argument.trim().isEmpty()) {
+				throw new TaskTrackerException(errorMessage);
+			}
+
+			return argument.trim();
 	}
 
 	/**
@@ -98,13 +118,13 @@ public class Parser {
 	 * @throws TaskTrackerException If the delimiter is missing or either resulting part is empty.
 	 */
 	private static String[] splitArgument(String input, String delimiter, String errorMessage) 
-		throws TaskTrackerException {
-		String[] parts = input.split(delimiter, 2);
-		
-		if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-			throw new TaskTrackerException(errorMessage);
-		}
+			throws TaskTrackerException {
+			String[] parts = input.split(delimiter, 2);
 
-		return new String[] {parts[0].trim(),parts[1].trim()};
+			if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+				throw new TaskTrackerException(errorMessage);
+			}
+
+			return new String[] {parts[0].trim(),parts[1].trim()};
 	}
 }

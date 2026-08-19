@@ -88,6 +88,10 @@ public class Message {
 	public static final String ERR_INVALID_INDEX =
 			"OOPS!! task number must be a valid integer.\n" + INDEX_FORMAT;
 	public static String MSG_TASK_COUNT(int count) {
-		return "Now you have " + count + "task" + (count == 1 ? "" : "s") + " in the list.";
+		return "Now you have " + count + " task" + (count == 1 ? "" : "s") + " in the list.\n";
+	}
+	public static String ERR_OUT_OF_BOUNDS(int count) {
+    		return "OOPS!! Task index out of bounds.\n" + INDEX_FORMAT + SYNTAX_VALID_RANGE
+				+ (count == 0 ? "No tasks available" : "1-" + count) + "\n";
 	}
 }
