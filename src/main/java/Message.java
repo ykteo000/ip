@@ -11,6 +11,14 @@ public class Message {
 		// Prevent instantiation
 	}
 
+	// --- Raw Command Syntax (private helpers) --- //
+	private static final String SYNTAX_INDEX = "mark <index> | unmark <index> | delete <index>";
+	private static final String SYNTAX_TODO = "todo <description>";
+	private static final String SYNTAX_DEADLINE = "deadline <description> /by <due date/ unknown date>";
+	private static final String SYNTAX_EVENT = "event <description> /from <start> /to <end>";
+	private static final String SYNTAX_VALID_RANGE = "Index range: ";
+	private static final String SYNTAX_FORMAT = "Format: ";
+
 	// --- Branding Elements --- //
 	public static final String INDENT_4 = "    ";
 	public static final String DIVIDER = "_".repeat(99);
@@ -32,45 +40,38 @@ public class Message {
 			+ "What can I do for you today?\n"
 			+ "Type 'help' to see available commands.\n";
 
+	public static final String MSG_GOODBYE = "Baiiiiiii!!! Cya soon!\n";
+
 	public static final String MSG_HELP = "Here are the available commands:\n"
             		+ "  - list : Views all tasks\n"
-            		+ "  - todo <desc> : Adds a todo task\n"
-			+ "  - deadline <desc> /by <date> : Adds a deadline task\n"
-			+ "  - event <desc> /from <start> /to <end> : Adds an event task\n"
-			+ "  - mark <index> : Marks a task as done\n"
-			+ "  - unmark <index> : Marks a task as undone\n"
-			+ "  - delete <index> : Deletes a task from the list\n"
-			+ "  - bye : Exits the program\n";
-
-	public static final String MSG_GOODBYE = "Baiiiiiii!!! Cya soon!\n";
+			+ "  - " + SYNTAX_TODO + " : Adds a todo task\n"
+        		+ "  - " + SYNTAX_DEADLINE + " : Adds a deadline task\n"
+        		+ "  - " + SYNTAX_EVENT + " : Adds an event task\n"
+        		+ "  - " + SYNTAX_INDEX + " : Manipulates task by index\n"
+        		+ "  - bye : Exits the program\n";
 
 	// --- Task Success Responses --- //
 	public static final String MSG_TASK_ADDED = "Got it. I've added this task:\n";
     	public static final String MSG_TASK_REMOVED = "Noted. I've removed this task:\n";
     	public static final String MSG_TASK_MARKED = "Well done on completing this task! Marked as done! :D\n";
     	public static final String MSG_TASK_UNMARKED = "Awwh... marked this as undone. Try finish soon ya? :P\n";
-    	public static final String MSG_NO_TASKS = "No tasks added yet, please add a task first!";
+    	public static final String MSG_NO_TASKS = "No tasks added yet, please add a task first!\n";
 
 	// --- User Input Formats --- //
-	public static final String INDEX_FORMAT = 
-			"Format: mark <index> | unmark <index> | delete <index>\nIndex range: 1-100";
-	public static final String TODO_FORMAT = "Format: todo <description>";
-	public static final String DEADLINE_FORMAT = 
-			"Format: deadline <description> /by <due date/ unknown date>";
-	public static final String EVENT_FORMAT = 
-			"Format: event <description> /from <start> /to <end>";
+	public static final String INDEX_FORMAT = SYNTAX_FORMAT + SYNTAX_INDEX + "\n"; 
+	public static final String TODO_FORMAT = SYNTAX_FORMAT + SYNTAX_TODO + "\n";
+	public static final String DEADLINE_FORMAT = SYNTAX_FORMAT + SYNTAX_DEADLINE + "\n";
+	public static final String EVENT_FORMAT = SYNTAX_FORMAT + SYNTAX_EVENT + "\n";
 
 	// --- Error Messages --- //
 	public static final String UNKNOWN_COMMAND = 
 			"OOPS!! I'm sowwyyy :ccc\n"
-			+ "I don't know what that command means ;(\n\n"
-			+ "Type 'help' to see available commands.";
-	public static final String ERR_TASK_LIST_EMPTY = "No task added yet, please add a task first!";
-	public static final String ERR_TASK_LIST_FULL = "OOPS!! Task list full. Please remove any task first!";
+			+ "I don't know what that command means ;(\n"
+			+ "Type 'help' to see available commands.\n";
+	public static final String ERR_TASK_LIST_EMPTY = "No task added yet, please add a task first!\n";
+	public static final String ERR_TASK_LIST_FULL = "OOPS!! Task list full. Please remove any task first!\n";
 	public static final String ERR_MISSING_INDEX = 
 			"OOPS!! specify a task index number.\n" + INDEX_FORMAT;
-	public static final String ERR_INVALID_INDEX = 
-			"OOPS!! task number must be a valid integer.\n" + INDEX_FORMAT;
 	public static final String ERR_EMPTY_TODO = 
 			"OOPS!! todo description cannot be empty.\n" + TODO_FORMAT;
 	public static final String ERR_EMPTY_DEADLINE = 
@@ -84,4 +85,9 @@ public class Message {
 			"OOPS!! Please specify a valid start time using '/from'.\n" + EVENT_FORMAT;
 	public static final String ERR_MISSING_TO = 
 			"OOPS!! Please specify a valid end time using '/to'.\n" + EVENT_FORMAT;
+	public static final String ERR_INVALID_INDEX =
+			"OOPS!! task number must be a valid integer.\n" + INDEX_FORMAT;
+	public static String MSG_TASK_COUNT(int count) {
+		return "Now you have " + count + "task" + (count == 1 ? "" : "s") + " in the list.";
+	}
 }

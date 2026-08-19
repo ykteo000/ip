@@ -42,12 +42,12 @@ public class TaskList {
 	 */
 	public String add(Task task) throws TaskTrackerException {
 		if (taskList.size() >= MAX_TASKS) {
-			throw new TaskTrackerException("OOPS!! Task list full. Please remove any task first!");
+			throw new TaskTrackerException(Message.ERR_TASK_LIST_FULL);
 		}
 
 		taskList.add(task);
-		return "Got it. I've added this task:\n" + "  " + task + "\n"
-			+ "Now you have " + taskList.size() + " tasks in the list.";
+		return Message.MSG_TASK_ADDED + " " + task + "\n"
+				+ Message.MSG_TASK_COUNT(taskList.size());
 	}
 
 	/**
@@ -59,13 +59,12 @@ public class TaskList {
 	 */
 	public String deleteTask(int index) throws TaskTrackerException {
 		if (index < 1 || index > taskList.size()) {
-			throw new TaskTrackerException("OOPS!! Task number " + index + " does not exist.");
+			throw new TaskTrackerException(Message.ERR_INVALID_INDEX);
 		}
 
 		Task removedTask = taskList.remove(index - 1);
-		return "Noted. I've removed this task:\n"
-			+ "  " + removedTask + "\n"
-			+ "Now you have " + taskList.size() + " tasks in the list.";
+		return Message.MSG_TASK_REMOVED + " " + removedTask + "\n"
+				+ Message.MSG_TASK_COUNT(taskList.size());
 	}
 
 	/**
@@ -75,7 +74,7 @@ public class TaskList {
 	 */
 	public String getFormattedList() {
 		if (taskList.isEmpty()) {
-			return "No tasks added yet, please add a task first!";
+			return Message.ERR_TASK_LIST_EMPTY;
 		}
 
 		return IntStream.range(0, taskList.size())
@@ -93,17 +92,17 @@ public class TaskList {
 	 */
 	public String setTaskStatus(int index, boolean isDone) throws TaskTrackerException {
 		if (index < 1 || index > taskList.size()) {
-			throw new TaskTrackerException("OOPS!!! Task number " + index + " does not exist.");
+			throw new TaskTrackerException(Message.ERR_INVALID_INDEX);
 		}
 
 		Task taskToUpdate = taskList.get(index - 1);
 
 		if (isDone) {
 			taskToUpdate.markAsDone();
-			return "Well done on completing this task! Marked as done! :D\n" + taskToUpdate;
+			return Message.MSG_TASK_MARKED + "\n " + taskToUpdate;
 		} else {
 			taskToUpdate.markAsUndone();
-			return "Awwh... marked this as undone. Try finish soon ya? :P\n" + taskToUpdate;
+			return Message.MSG_TASK_UNMARKED + "\n " + taskToUpdate;
 		}
 	}
 }

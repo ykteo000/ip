@@ -20,7 +20,6 @@ public class UserInterface {
 		System.out.println(Message.DIVIDER);
 		System.out.println(Message.BANNER);
 		showMessage(Message.MSG_WELCOME);
-		System.out.println(Message.DIVIDER);
 	}
 
 	/**
@@ -51,7 +50,6 @@ public class UserInterface {
 		System.out.println(Message.DIVIDER);
 		System.out.println(Message.BANNER);
 		showMessage(Message.MSG_GOODBYE);
-		System.out.println(Message.DIVIDER);
 	}
 
 	/**
