@@ -3,25 +3,6 @@ import java.util.Scanner;
  * Handles all user interface operations including reading input and displaying messages.
  */
 public class UserInterface {	
-
-	// Define indent of 4 spaces
-	private static final String INDENT_4 = "    ";
-
-	// Define a divider line using underscores
-	private static final String DIVIDER = "_".repeat(99);
-
-	// Define the TaskTracker banner logo using external tool from manytools
-	// Gemini AI was used to generate the specific formatting for the banner
-	private static final String BANNER = "  ______           __                 \n"
-		+ " /_  ______ ______/ /__                \n"
-		+ "  / / / __ `/ ___/ //_/                \n"
-		+ " / / / /_/ (__  / ,<                   \n"
-		+ "/_______,_/____/_/|_|   __            \n"
-		+ " /_  ___________ ______/ /_____  _____\n"
-		+ "  / / / ___/ __ `/ ___/ //_/ _ \\/ ___/\n"
-		+ " / / /  / /_/ / /__/ ,< /  __/ /    \n"
-		+ "/_/ /_/   \\__,_/\\___/_/|_|\\___/_/     \n";
-
 	// Creates a scanner object to read user's inputs
 	private final Scanner scanner;
 
@@ -36,13 +17,10 @@ public class UserInterface {
 	 * Displays the welcome message and application banner.
 	 */ 
 	public void showWelcome() {
-		System.out.println(DIVIDER);
-		System.out.println(BANNER);
-		System.out.println("Hello there! I'm TaskTracker.");
-		System.out.println("I am a chatbot used to track your tasks.\n");
-		System.out.println("What can I do for you today?\n");
-		System.out.println("Type 'help' to see available commands.\n");
-		System.out.println(DIVIDER);
+		System.out.println(Message.DIVIDER);
+		System.out.println(Message.BANNER);
+		showMessage(Message.MSG_WELCOME);
+		System.out.println(Message.DIVIDER);
 	}
 
 	/**
@@ -60,37 +38,27 @@ public class UserInterface {
 	 * @param message Message content to display.
 	 */
 	public void showMessage(String message) {
-		System.out.println(DIVIDER);
-		String indentedMessage = INDENT_4 + message.replace("\n", "\n" + INDENT_4);
+		System.out.println(Message.DIVIDER);
+		String indentedMessage = Message.INDENT_4 + message.replace("\n", "\n" + Message.INDENT_4);
 		System.out.println(indentedMessage);
-		System.out.println(DIVIDER);
+		System.out.println(Message.DIVIDER);
 	}
 
 	/**
 	 * Displays the farewell message upon exiting the application.
 	 */
 	public void showGoodbye() {
-		System.out.println(DIVIDER);
-		System.out.println(INDENT_4 + "Baiiiiiii!!! Cya soon!\n");
-		System.out.println(BANNER);
-		System.out.println(DIVIDER);
+		System.out.println(Message.DIVIDER);
+		System.out.println(Message.BANNER);
+		showMessage(Message.MSG_GOODBYE);
+		System.out.println(Message.DIVIDER);
 	}
-
 
 	/**
  	* Displays the help guide showing all available commands and their formats.
  	*/
 	public void showHelp() {
-    		String helpMessage = "Here are the available commands:\n"
-            			+ "  - list : Views all tasks\n"
-            			+ "  - todo <desc> : Adds a todo task\n"
-				+ "  - deadline <desc> /by <date> : Adds a deadline task\n"
-				+ "  - event <desc> /from <start> /to <end> : Adds an event task\n"
-				+ "  - mark <index> : Marks a task as done\n"
-				+ "  - unmark <index> : Marks a task as undone\n"
-				+ "  - delete <index> : Deletes a task from the list\n"
-				+ "  - bye : Exits the program";
-    		showMessage(helpMessage);
+    		showMessage(Message.MSG_HELP);
 	}
 }
 

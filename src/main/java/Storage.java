@@ -7,6 +7,12 @@ import java.util.Scanner;
 
 /**
  * Handles the loading and saving of task data to and from a local file.
+ *
+ * Note: Gemini AI was used here, especially for the save and load methods.
+ * Prompt "I want to save all the user input and list as a log file."
+ * Prompt "This is one sample format for the file, which we can follow."
+ * Prompt "How do we convert the saved file back when loading?"
+ * Add code only after an intermediate level of understanding achieved.
  */
 public class Storage {
 	private static final String DEFAULT_FILE_PATH = "./data/tasks.txt";

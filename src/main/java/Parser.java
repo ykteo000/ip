@@ -1,6 +1,6 @@
 /**
  * Handles parsing and validation of raw user command strings.
- *OB
+ *
  * Note: Gemini AI was used substantially at this section to handle input edge cases.
  * Initial idea to create a dedicated parser class was by me, further refinement by AI.
  * Prompt "I currently have these methods in TaskTracker.java but I want to move them."
@@ -18,11 +18,11 @@ public class Parser {
 	 * @throws TaskTrackerException If the argument is empty or cannot be parsed into an integer.
 	 */
 	public static int parseIndex(String argument) throws TaskTrackerException {
-		String trimmed = validateNonEmpty(argument, ErrorMessage.MISSING_INDEX);
+		String trimmed = validateNonEmpty(argument, Message.ERR_MISSING_INDEX);
 		try {
 			return Integer.parseInt(trimmed);
 		} catch (NumberFormatException e) {
-			throw new TaskTrackerException(ErrorMessage.INVALID_INDEX);
+			throw new TaskTrackerException(Message.ERR_INVALID_INDEX);
 		}
 	}
 
@@ -34,7 +34,7 @@ public class Parser {
 	 * @throws TaskTrackerException If the description is empty or missing.
 	 */
 	public static ToDo parseToDo(String argument) throws TaskTrackerException {
-		String description = validateNonEmpty(argument,ErrorMessage.EMPTY_TODO);
+		String description = validateNonEmpty(argument,Message.ERR_EMPTY_TODO);
 		
 		return new ToDo(description);
 	}
@@ -47,9 +47,9 @@ public class Parser {
 	 * @throws TaskTrackerException If the description or date is empty, or if '/by' is missing.
 	 */
 	public static Deadline parseDeadline(String argument) throws TaskTrackerException {
-		validateNonEmpty(argument, ErrorMessage.EMPTY_DEADLINE);
+		validateNonEmpty(argument, Message.ERR_EMPTY_DEADLINE);
 
-		String[] parts = splitArgument(argument," /by ", ErrorMessage.MISSING_BY);
+		String[] parts = splitArgument(argument," /by ", Message.ERR_MISSING_BY);
 
 		return new Deadline(parts[0], parts[1]);
 	}
@@ -62,11 +62,11 @@ public class Parser {
 	 * @throws TaskTrackerException If any field is empty, or if '/from' or '/to' specifiers are missing.
 	 */
 	public static Event parseEvent(String argument) throws TaskTrackerException {
-		validateNonEmpty(argument, ErrorMessage.EMPTY_EVENT);
+		validateNonEmpty(argument, Message.ERR_EMPTY_EVENT);
 
-		String[] fromParts = splitArgument(argument," /from ", ErrorMessage.MISSING_FROM);
+		String[] fromParts = splitArgument(argument," /from ", Message.ERR_MISSING_FROM);
 
-		String[] toParts = splitArgument(fromParts[1]," /to ", ErrorMessage.MISSING_TO);
+		String[] toParts = splitArgument(fromParts[1]," /to ", Message.ERR_MISSING_TO);
 		
 		return new Event(fromParts[0], toParts[0], toParts[1]);
 	}
