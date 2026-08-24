@@ -1,3 +1,7 @@
+package tasktracker.task;
+
+import tasktracker.exception.TaskTrackerException;
+
 /**
  * Represents an Event task that occurs within a specified start and end time range.
  */

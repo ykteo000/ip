@@ -1,3 +1,5 @@
+package tasktracker.ui;
+
 /**
  * Container for all user-facing UI messages, application branding elements,
  * and command format error templates.

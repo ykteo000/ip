@@ -1,3 +1,8 @@
+package tasktracker.command;
+
+import tasktracker.exception.TaskTrackerException;
+import tasktracker.ui.Message;
+
 /**
  * Represents the set of valid commands supported by the TaskTracker application.
  * Provides a lookup method to parse raw input strings into enum constants.

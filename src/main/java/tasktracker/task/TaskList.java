@@ -1,7 +1,11 @@
+package tasktracker.task;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import tasktracker.exception.TaskTrackerException;
+import tasktracker.ui.Message;
 
 /**
  * Represents a collection of tasks and handles task-level operations such as adding,
