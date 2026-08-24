@@ -12,102 +12,102 @@ import tasktracker.ui.Message;
  * formatting output, and updating task completion status.
  */
 public class TaskList {
-	// Set a limit to 100 to prevent user misuse.
-	private static final int MAX_TASKS = 100;
-	private final List<Task> taskList;
+    // Set a limit to 100 to prevent user misuse.
+    private static final int MAX_TASKS = 100;
+    private final List<Task> taskList;
 
-	/**
-	 * Initializes an empty TaskList.
-	 */
-	public TaskList() {
-		this.taskList = new ArrayList<>();
-	}
+    /**
+     * Initializes an empty TaskList.
+     */
+    public TaskList() {
+        this.taskList = new ArrayList<>();
+    }
 
-	/**
-	 * Initializes a TaskList with pre-loaded tasks (from Storage).
-	 */
-	public TaskList(List<Task> savedTasks) {
-		this.taskList = savedTasks;
-	}
+    /**
+     * Initializes a TaskList with pre-loaded tasks (from Storage).
+     */
+    public TaskList(List<Task> savedTasks) {
+        this.taskList = savedTasks;
+    }
 
-	/**
-	 * Returns the underlying list of tasks for saving.
-	 */
-	public List<Task> getTasks() {
-		return this.taskList;
-	}
+    /**
+     * Returns the underlying list of tasks for saving.
+     */
+    public List<Task> getTasks() {
+        return this.taskList;
+    }
 
-	/**
-	 * Adds a task to the list if space permits.
-	 *
-	 * @param task Task to be added.
-	 * @return Message confirming addition of the task.
-	 * @throws TaskTrackerException If the task list has reached MAX_TASKS capacity.
-	 */
-	public String add(Task task) throws TaskTrackerException {
-		if (taskList.size() >= MAX_TASKS) {
-			throw new TaskTrackerException(Message.ERR_TASK_LIST_FULL);
-		}
+    /**
+     * Adds a task to the list if space permits.
+     *
+     * @param task Task to be added.
+     * @return Message confirming addition of the task.
+     * @throws TaskTrackerException If the task list has reached MAX_TASKS capacity.
+     */
+    public String add(Task task) throws TaskTrackerException {
+        if (taskList.size() >= MAX_TASKS) {
+            throw new TaskTrackerException(Message.ERR_TASK_LIST_FULL);
+        }
 
-		taskList.add(task);
-		return Message.MSG_TASK_ADDED + " " + task + "\n"
-				+ Message.MSG_TASK_COUNT(taskList.size());
-	}
+        taskList.add(task);
+        return Message.MSG_TASK_ADDED + " " + task + "\n"
+                + Message.MSG_TASK_COUNT(taskList.size());
+    }
 
-	/**
-	 * Deletes a task from the list by its 1-based index.
-	 *
-	 * @param index 1-based index of the task to remove.
-	 * @return Confirmation message of the deleted task.
-	 * @throws TaskTrackerException If the task index is out of bounds.
-	 */
-	public String deleteTask(int index) throws TaskTrackerException {
-		if (index < 1 || index > taskList.size()) {
-			throw new TaskTrackerException(Message.ERR_OUT_OF_BOUNDS(taskList.size()));
-		}
+    /**
+     * Deletes a task from the list by its 1-based index.
+     *
+     * @param index 1-based index of the task to remove.
+     * @return Confirmation message of the deleted task.
+     * @throws TaskTrackerException If the task index is out of bounds.
+     */
+    public String deleteTask(int index) throws TaskTrackerException {
+        if (index < 1 || index > taskList.size()) {
+            throw new TaskTrackerException(Message.ERR_OUT_OF_BOUNDS(taskList.size()));
+        }
 
-		Task removedTask = taskList.remove(index - 1);
-		return Message.MSG_TASK_REMOVED + " " + removedTask + "\n"
-				+ Message.MSG_TASK_COUNT(taskList.size());
-	}
+        Task removedTask = taskList.remove(index - 1);
+        return Message.MSG_TASK_REMOVED + " " + removedTask + "\n"
+                + Message.MSG_TASK_COUNT(taskList.size());
+    }
 
-	/**
-	 * Generates a formatted string representing all tasks currently stored in the list.
-	 *
-	 * @return Formatted string of all tasks with 1-based indexing, else tells user list is empty.
-	 */
-	public String getFormattedList() {
-		if (taskList.isEmpty()) {
-			return Message.ERR_TASK_LIST_EMPTY;
-		}
+    /**
+     * Generates a formatted string representing all tasks currently stored in the list.
+     *
+     * @return Formatted string of all tasks with 1-based indexing, else tells user list is empty.
+     */
+    public String getFormattedList() {
+        if (taskList.isEmpty()) {
+            return Message.ERR_TASK_LIST_EMPTY;
+        }
 
-		return IntStream.range(0, taskList.size())
-			.mapToObj(i -> (i + 1) + ". " + taskList.get(i))
-			.collect(Collectors.joining("\n"));
-	}
+        return IntStream.range(0, taskList.size())
+                .mapToObj(i -> (i + 1) + ". " + taskList.get(i))
+                .collect(Collectors.joining("\n"));
+    }
 
-	/**
-	 * Sets the status of a task identified by its 1-based index.
-	 *
-	 * @param index 1-based task index.
-	 * @param isDone True to mark as done, false to mark as undone.
-	 * @return Confirmation message of the updated task status.
-	 * @throws TaskTrackerException If the task index is out of bounds.
-	 */
-	public String setTaskStatus(int index, boolean isDone) throws TaskTrackerException {
-		if (index < 1 || index > taskList.size()) {
-			throw new TaskTrackerException(Message.ERR_OUT_OF_BOUNDS(taskList.size()));
-		}
+    /**
+     * Sets the status of a task identified by its 1-based index.
+     *
+     * @param index 1-based task index.
+     * @param isDone True to mark as done, false to mark as undone.
+     * @return Confirmation message of the updated task status.
+     * @throws TaskTrackerException If the task index is out of bounds.
+     */
+    public String setTaskStatus(int index, boolean isDone) throws TaskTrackerException {
+        if (index < 1 || index > taskList.size()) {
+            throw new TaskTrackerException(Message.ERR_OUT_OF_BOUNDS(taskList.size()));
+        }
 
-		Task taskToUpdate = taskList.get(index - 1);
+        Task taskToUpdate = taskList.get(index - 1);
 
-		if (isDone) {
-			taskToUpdate.markAsDone();
-			return Message.MSG_TASK_MARKED + " " + taskToUpdate;
-		} else {
-			taskToUpdate.markAsUndone();
-			return Message.MSG_TASK_UNMARKED + " " + taskToUpdate;
-		}
-	}
+        if (isDone) {
+            taskToUpdate.markAsDone();
+            return Message.MSG_TASK_MARKED + " " + taskToUpdate;
+        } else {
+            taskToUpdate.markAsUndone();
+            return Message.MSG_TASK_UNMARKED + " " + taskToUpdate;
+        }
+    }
 }
 
