@@ -1,3 +1,5 @@
+package tasktracker.exception;
+
 /**
  * Represents errors specific to the TaskTracker application.
  */

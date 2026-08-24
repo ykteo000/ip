@@ -1,3 +1,15 @@
+package tasktracker;
+
+import tasktracker.command.CommandType;
+import tasktracker.exception.TaskTrackerException;
+import tasktracker.parser.Parser;
+import tasktracker.storage.Storage;
+import tasktracker.task.TaskList;
+import tasktracker.ui.UserInterface;
+import tasktracker.task.ToDo;
+import tasktracker.task.Deadline;
+import tasktracker.task.Event;
+
 /**
  * Serves as the entry point and main controller for the application.
  * Manages the user interaction loop until the user chooses to exit.

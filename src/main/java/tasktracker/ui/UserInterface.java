@@ -1,4 +1,9 @@
+package tasktracker.ui;
+
+import tasktracker.task.Task;
+import tasktracker.task.TaskList;
 import java.util.Scanner;
+
 /**
  * Handles all user interface operations including reading input and displaying messages.
  */

@@ -1,3 +1,5 @@
+package tasktracker.task;
+
 /**
  * Represents a generic task in the application.
  * Serves as the base class for specific task types like ToDo, Deadline, and Event.

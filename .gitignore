@@ -19,8 +19,8 @@ _temp/
 # Classes
 src/main/java/*.class
 
-# Data folder in src/main/java
-src/main/java/data/
+# TaskTracker Save File
+data/
 
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT

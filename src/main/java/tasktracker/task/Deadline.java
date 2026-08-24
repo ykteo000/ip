@@ -1,3 +1,7 @@
+package tasktracker.task;
+
+import tasktracker.exception.TaskTrackerException;
+
 /**
  * Represents a Deadline task that needs to be completed by a specific date or time.
  */
