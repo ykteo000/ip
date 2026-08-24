@@ -51,7 +51,7 @@ public class Parser {
 
 		String[] parts = splitArgument(argument," /by ", Message.ERR_MISSING_BY);
 
-		return new Deadline(parts[0], parts[1]);
+		return new Deadline(parts[0].trim(), new TaskDateTime(parts[1].trim()));
 	}
 
 	/**
@@ -63,34 +63,47 @@ public class Parser {
 	 * @throws TaskTrackerException If any field is empty, or if '/from' or '/to' specifiers are missing.
 	 */
 	public static Event parseEvent(String argument) throws TaskTrackerException {
-		// 1. Check if argument exists at all
-		validateNonEmpty(argument, Message.ERR_EMPTY_EVENT);
+		String trimmed = validateNonEmpty(argument, Message.ERR_EMPTY_EVENT);
 
-		// 2. Ensure '/from' exists and description before it is non-empty
-		if (!argument.contains(" /from ")) {
+		// 1. Verify required delimiters exist
+		if (!trimmed.contains("/from")) {
 			throw new TaskTrackerException(Message.ERR_MISSING_FROM);
 		}
-		String[] fromParts = argument.split(" /from ", 2);
-		if (fromParts[0].trim().isEmpty()) {
+		if (!trimmed.contains("/to")) {
+			throw new TaskTrackerException(Message.ERR_MISSING_TO);
+		}
+
+		// 2. Extract description (before /from)
+		String[] fromParts = trimmed.split("/from", 2);
+		String description = fromParts[0].trim();
+		if (description.isEmpty()) {
 			throw new TaskTrackerException(Message.ERR_EMPTY_EVENT);
 		}
 
-		// 3. Ensure '/to' exists and '/from' value is non-empty
-		if (!fromParts[1].contains(" /to ")) {
-			throw new TaskTrackerException(Message.ERR_MISSING_TO);
-		}
-		String[] toParts = fromParts[1].split(" /to ", 2);
-		if (toParts[0].trim().isEmpty()) {
+		// 3. Extract /from and /to segments
+		String[] toParts = fromParts[1].split("/to", 2);
+		String fromStr = toParts[0].trim();
+		String toStr = (toParts.length > 1) ? toParts[1].trim() : "";
+
+		if (fromStr.isEmpty()) {
 			throw new TaskTrackerException(Message.ERR_MISSING_FROM);
 		}
-
-		// 4. Ensure '/to' value is non-empty
-		if (toParts[1].trim().isEmpty()) {
+		if (toStr.isEmpty()) {
 			throw new TaskTrackerException(Message.ERR_MISSING_TO);
 		}
 
-		return new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim());
+		// 4. Parse date-times (strict parsing handled by TaskDateTime)
+		TaskDateTime startDateTime = new TaskDateTime(fromStr);
+		TaskDateTime endDateTime = new TaskDateTime(toStr);
+
+		// 5. Enforce chronological sequence
+		if (startDateTime.getDateTime().isAfter(endDateTime.getDateTime())) {
+			throw new TaskTrackerException(Message.ERR_EVENT_CHRONOLOGY);
+		}
+
+		return new Event(description, startDateTime, endDateTime);
 	}
+
 	/**
 	 * Ensures an argument string is non-empty after trimming.
 	 *

@@ -103,7 +103,7 @@ public class Storage {
 		}
 
 		String type = parts[0];
-		boolean isDone = parts[1].equals("1");
+		boolean isDone = parts[1].trim().equals("1");
 		String description = parts[2];
 
 		Task task;
@@ -115,13 +115,14 @@ public class Storage {
 				if (parts.length < 4) {
 					throw new TaskTrackerException("Corrupted Deadline entry: " + line);
 				}
-				task = new Deadline(description, parts[3]);
+				task = new Deadline(description, new TaskDateTime(parts[3].trim()));
 				break;
 			case "E":
 				if (parts.length < 5) {
 					throw new TaskTrackerException("Corrupted Event entry: " + line);
 				}
-				task = new Event(description, parts[3], parts[4]);
+				task = new Event(description, new TaskDateTime(parts[3].trim()),
+						new TaskDateTime(parts[4].trim()));
 				break;
 			default:
 				throw new TaskTrackerException("Unknown task type in file: " + type);
