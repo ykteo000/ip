@@ -2,8 +2,8 @@
  * Represents an Event task that occurs within a specified start and end time range.
  */
 public class Event extends Task {
-	protected String from;
-	protected String to;
+	protected TaskDateTime from;
+	protected TaskDateTime to;
 
 	/**
 	 * Constructs an Event instance with the specified description, start time, and end time.
@@ -12,7 +12,7 @@ public class Event extends Task {
 	 * @param from Start time or start date description.
 	 * @param to End time or end date description.
 	 */
-	public Event(String description, String from, String to) {
+	public Event(String description, TaskDateTime from, TaskDateTime to) {
 		super(description);
 		this.from = from;
 		this.to = to;
@@ -20,12 +20,13 @@ public class Event extends Task {
 
 	@Override
 	public String toString() {
-		return "[E]" + super.toString() + " (from: " + from +
-			" to: " + to + ")";
+		return "[E]" + super.toString() + " (from: " + from.toDisplayString()
+				+ " to: " + to.toDisplayString() + ")";
 	}
 
 	@Override
 	public String toFileFormat() {
-		return "E | " + (isDone ? "1" : "0") + " | " + description + " | " + from + " | " + to;
+		return "E | " + (isDone ? "1" : "0") + " | " + description + " | "
+				+ from.toFileString() + " | " + to.toFileString();
 	}
 }
