@@ -1,7 +1,5 @@
 package tasktracker.task;
 
-import tasktracker.exception.TaskTrackerException;
-
 /**
  * Represents a Deadline task that needs to be completed by a specific date or time.
  */
@@ -19,11 +17,21 @@ public class Deadline extends Task {
 		this.by = by;
 	}
 
-	@Override
+    /**
+     * Returns the formatted string representation of the deadline task.
+     *
+     * @return String representation containing status, description, and due date.
+     */
+    @Override
 	public String toString() {
 		return "[D]" + super.toString() + " (by: " + by.toDisplayString() + ")";
 	}
 
+    /**
+     * Formats the deadline task for file storage.
+     *
+     * @return Pipe-delimited string representing the deadline task.
+     */
 	@Override
 	public String toFileFormat() {
 		return "D | " + (isDone ? "1" : "0") + " | " + description + " | " + by.toFileString();

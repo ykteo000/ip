@@ -11,7 +11,6 @@ import tasktracker.exception.TaskTrackerException;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
 import tasktracker.task.Task;
-import tasktracker.task.TaskList;
 import tasktracker.task.ToDo;
 import tasktracker.task.TaskDateTime;
 
@@ -46,7 +45,8 @@ public class Storage {
 
 	/**
 	 * Saves the provided list of tasks to the storage file.
-	 * Creates any missing parent directories before writing.
+	 *
+     * Creates any missing parent directories before writing.
 	 *
 	 * @param tasks The list of tasks to be saved.
 	 * @throws TaskTrackerException If an I/O error occurs while writing to the file.
@@ -65,7 +65,6 @@ public class Storage {
 			throw new TaskTrackerException("Failed to save tasks: " + e.getMessage());
 		}
 	}
-
 
 	/**
 	 * Loads tasks from the storage file upon application startup.
@@ -96,7 +95,6 @@ public class Storage {
 			throw new TaskTrackerException("Failed to load tasks: " + e.getMessage());
 		}
 		return loadedTasks;
-
 	}
 
 	/**

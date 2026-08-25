@@ -1,7 +1,5 @@
 package tasktracker.task;
 
-import tasktracker.exception.TaskTrackerException;
-
 /**
  * Represents an Event task that occurs within a specified start and end time range.
  */
@@ -22,12 +20,22 @@ public class Event extends Task {
 		this.to = to;
 	}
 
+    /**
+     * Returns the formatted string representation of the event task.
+     *
+     * @return String representation containing status, description, start time, and end time.
+     */
 	@Override
 	public String toString() {
 		return "[E]" + super.toString() + " (from: " + from.toDisplayString()
 				+ " to: " + to.toDisplayString() + ")";
 	}
 
+    /**
+     * Formats the event task for file storage.
+     *
+     * @return Pipe-delimited string representing the event task.
+     */
 	@Override
 	public String toFileFormat() {
 		return "E | " + (isDone ? "1" : "0") + " | " + description + " | "
