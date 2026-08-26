@@ -85,10 +85,10 @@ public class TaskList {
 			return Message.ERR_TASK_LIST_EMPTY;
 		}
 
-		return IntStream.range(0, taskList.size())
-			    .mapToObj(i -> (i + 1) + ". " + taskList.get(i))
-			    .collect(Collectors.joining("\n"));
-	}
+        return IntStream.range(0, taskList.size())
+                .mapToObj(i -> (i + 1) + ". " + taskList.get(i))
+                .collect(Collectors.joining("\n"));
+    }
 
 	/**
 	 * Sets the status of a task identified by its 1-based index.

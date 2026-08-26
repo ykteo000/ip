@@ -24,28 +24,28 @@ import tasktracker.task.TaskDateTime;
  * Add code only after an intermediate level of understanding achieved.
  */
 public class Storage {
-	private static final String DEFAULT_FILE_PATH = "./data/tasks.txt";
-	private final String filePath;
+    private static final String DEFAULT_FILE_PATH = "./data/tasks.txt";
+    private final String filePath;
 
-	/**
-	 * Constructs a Storage instance with the default file path.
-	 */
-	public Storage() {
-		this(DEFAULT_FILE_PATH);
-	}
+    /**
+     * Constructs a Storage instance with the default file path.
+     */
+    public Storage() {
+        this(DEFAULT_FILE_PATH);
+    }
 
-	/**
-	 * Constructs a Storage instance with the specified file path.
-	 *
-	 * @param filePath The path where tasks are saved.
-	 */
-	public Storage(String filePath) {
-		this.filePath = filePath;
-	}
+    /**
+     * Constructs a Storage instance with the specified file path.
+     *
+     * @param filePath The path where tasks are saved.
+     */
+    public Storage(String filePath) {
+        this.filePath = filePath;
+    }
 
 	/**
 	 * Saves the provided list of tasks to the storage file.
-	 *
+	 *<p>
      * Creates any missing parent directories before writing.
 	 *
 	 * @param tasks The list of tasks to be saved.
@@ -57,28 +57,28 @@ public class Storage {
 			file.getParentFile().mkdirs();
 		}
 
-		try (FileWriter writer = new FileWriter(file)) {
-			for (Task task : tasks) {
-				writer.write(task.toFileFormat() + System.lineSeparator());
-			}
-		} catch (IOException e) {
-			throw new TaskTrackerException("Failed to save tasks: " + e.getMessage());
-		}
-	}
+        try (FileWriter writer = new FileWriter(file)) {
+            for (Task task : tasks) {
+                writer.write(task.toFileFormat() + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            throw new TaskTrackerException("Failed to save tasks: " + e.getMessage());
+        }
+    }
 
-	/**
-	 * Loads tasks from the storage file upon application startup.
-	 *
-	 * @return A list of tasks parsed from the file, or an empty list if no save file exists.
-	 * @throws TaskTrackerException If the file contains invalid formatting or I/O error occurs.
-	 */
-	public List<Task> load() throws TaskTrackerException {
-		List<Task> loadedTasks = new ArrayList<>();
-		File file = new File(filePath);
+    /**
+     * Loads tasks from the storage file upon application startup.
+     *
+     * @return A list of tasks parsed from the file, or an empty list if no save file exists.
+     * @throws TaskTrackerException If the file contains invalid formatting or I/O error occurs.
+     */
+    public List<Task> load() throws TaskTrackerException {
+        List<Task> loadedTasks = new ArrayList<>();
+        File file = new File(filePath);
 
-		if (!file.exists()) {
-			return loadedTasks; // Return empty list if no save file exists yet
-		}
+        if (!file.exists()) {
+            return loadedTasks; // Return empty list if no save file exists yet
+        }
 
 		try (Scanner scanner = new Scanner(file)) {
 			while (scanner.hasNextLine()) {
@@ -95,24 +95,25 @@ public class Storage {
 			throw new TaskTrackerException("Failed to load tasks: " + e.getMessage());
 		}
 		return loadedTasks;
+
 	}
 
-	/**
-	 * Converts a single line from the save file into a corresponding {@code Task} object.
-	 *
-	 * @param line A single pipe-delimited line from the storage file.
-	 * @return The instantiated {@code Task} object with its completion status updated.
-	 * @throws TaskTrackerException If the task type is unrecognized or fields are missing.
-	 */
-	private Task parseTaskFromLine(String line) throws TaskTrackerException {
-		String[] parts = line.split(" \\| ");
-		if (parts.length < 3) {
-			throw new TaskTrackerException("Corrupted file entry: " + line);
-		}
+    /**
+     * Converts a single line from the save file into a corresponding {@code Task} object.
+     *
+     * @param line A single pipe-delimited line from the storage file.
+     * @return The instantiated {@code Task} object with its completion status updated.
+     * @throws TaskTrackerException If the task type is unrecognized or fields are missing.
+     */
+    private Task parseTaskFromLine(String line) throws TaskTrackerException {
+        String[] parts = line.split(" \\| ");
+        if (parts.length < 3) {
+            throw new TaskTrackerException("Corrupted file entry: " + line);
+        }
 
-		String type = parts[0];
-		boolean isDone = parts[1].trim().equals("1");
-		String description = parts[2];
+        String type = parts[0];
+        boolean isDone = parts[1].trim().equals("1");
+        String description = parts[2];
 
 		Task task;
 		switch (type) {
@@ -139,7 +140,6 @@ public class Storage {
 		if (isDone) {
 			task.markAsDone();
 		}
-
 		return task;
 	}
 }

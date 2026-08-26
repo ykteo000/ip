@@ -2,9 +2,9 @@ package tasktracker.task;
 
 /**
  * Represents a generic task in the application.
- *
+ *<p>
  * Serves as the base class for specific task types like ToDo, Deadline, and Event.
- *
+ *<p>
  * Credits: Skeleton class template provided from CS2103T website.
  */
 public abstract class Task {

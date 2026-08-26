@@ -10,16 +10,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParserTest {
 
-	@Test
-	public void parseToDo_validInput_returnsToDo() throws TaskTrackerException {
-		ToDo todo = Parser.parseToDo("read book");
-		assertEquals("[T][ ] read book", todo.toString());
-	}
+    @Test
+    public void parseToDo_validInput_returnsToDo() throws TaskTrackerException {
+        ToDo todo = Parser.parseToDo("read book");
+        assertEquals("[T][ ] read book", todo.toString());
+    }
 
-	@Test
-	public void parseToDo_emptyDescription_exceptionThrown() {
-		assertThrows(TaskTrackerException.class, () -> {
-			Parser.parseToDo("   ");
-		});
-	}
+    @Test
+    public void parseToDo_emptyDescription_exceptionThrown() {
+        assertThrows(TaskTrackerException.class, () -> {
+                     Parser.parseToDo("   ");
+                     });
+    }
 }

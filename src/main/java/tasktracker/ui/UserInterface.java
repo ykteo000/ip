@@ -11,12 +11,12 @@ public class UserInterface {
      */
 	private final Scanner scanner;
 
-	/**
-	 * Initializes a new UserInterface instance with a System.in scanner.
-	 */
-	public UserInterface() {
-		this.scanner = new Scanner(System.in);
-	}
+    /**
+     * Initializes a new UserInterface instance with a System.in scanner.
+     */
+    public UserInterface() {
+        this.scanner = new Scanner(System.in);
+    }
 
 	/**
 	 * Displays the welcome message and application banner.
@@ -35,17 +35,17 @@ public class UserInterface {
 		return scanner.nextLine();
 	}
 
-	/**
-	 * Wraps and prints a message inside divider lines with standard indentation.
-	 *
-	 * @param message Message content to display.
-	 */
-	public void showMessage(String message) {
-		System.out.println(Message.DIVIDER);
-		String indentedMessage = Message.INDENT_4 + message.replace("\n", "\n" + Message.INDENT_4);
-		System.out.println(indentedMessage);
-		System.out.println(Message.DIVIDER);
-	}
+    /**
+     * Wraps and prints a message inside divider lines with standard indentation.
+     *
+     * @param message Message content to display.
+     */
+    public void showMessage(String message) {
+        System.out.println(Message.DIVIDER);
+        String indentedMessage = Message.INDENT_4 + message.replace("\n", "\n" + Message.INDENT_4);
+        System.out.println(indentedMessage);
+        System.out.println(Message.DIVIDER);
+    }
 
 	/**
 	 * Displays the farewell message upon exiting the application.
@@ -55,12 +55,12 @@ public class UserInterface {
 		showMessage(Message.MSG_GOODBYE);
 	}
 
-	/**
- 	* Displays the help guide showing all available commands and their formats.
- 	*/
-	public void showHelp() {
-    		showMessage(Message.MSG_HELP);
-	}
+    /**
+     * Displays the help guide showing all available commands and their formats.
+     */
+    public void showHelp() {
+        showMessage(Message.MSG_HELP);
+    }
 }
 
 

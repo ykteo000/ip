@@ -15,19 +15,19 @@ import tasktracker.ui.Message;
  * UI display formatting, and file save formatting.
  */
 public class TaskDateTime {
-	private static final DateTimeFormatter INPUT_FORMATTER =
-		DateTimeFormatter.ofPattern("uuuu-MM-dd HHmm")
-				.withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter INPUT_FORMATTER =
+            DateTimeFormatter.ofPattern("uuuu-MM-dd HHmm")
+            .withResolverStyle(ResolverStyle.STRICT);
 
-	private static final DateTimeFormatter DISPLAY_FORMATTER = new DateTimeFormatterBuilder()
-		.parseCaseInsensitive()
-		.appendPattern("MMM d yyyy, h:mm a")
-		.toFormatter(Locale.ENGLISH);
+    private static final DateTimeFormatter DISPLAY_FORMATTER = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .appendPattern("MMM d yyyy, h:mm a")
+            .toFormatter(Locale.ENGLISH);
 
-	private static final DateTimeFormatter FILE_FORMATTER =
-		DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    private static final DateTimeFormatter FILE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
 
-	private final LocalDateTime dateTime;
+    private final LocalDateTime dateTime;
 
     /**
      * Constructs a TaskDateTime instance by parsing a raw date-time string.
