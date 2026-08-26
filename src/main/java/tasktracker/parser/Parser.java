@@ -38,6 +38,17 @@ public class Parser {
 		}
 	}
 
+    /**
+     * Parses and validates the search keyword argument for the find command.
+     *
+     * @param argument The raw input string containing the search keyword.
+     * @return The trimmed search keyword.
+     * @throws TaskTrackerException If the keyword is missing or empty.
+     */
+    public static String parseFind(String argument) throws TaskTrackerException {
+        return validateNonEmpty(argument, Message.ERR_EMPTY_FIND);
+    }
+
 	/**
 	 * Parses argument into a ToDo object.
 	 *
@@ -142,7 +153,7 @@ public class Parser {
 	 * @return A two-element array containing trimmed substring parts [part1, part2].
 	 * @throws TaskTrackerException If the delimiter is missing or either resulting part is empty.
 	 */
-	private static String[] splitArgument(String input, String delimiter, String errorMessage) 
+	private static String[] splitArgument(String input, String delimiter, String errorMessage)
 			throws TaskTrackerException {
 			String[] parts = input.split(delimiter, 2);
 

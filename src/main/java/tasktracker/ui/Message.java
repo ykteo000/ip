@@ -3,7 +3,7 @@ package tasktracker.ui;
 /**
  * Container for all user-facing UI messages, application branding elements,
  * and command format error templates.
- * 
+ *
  * Centralizes static message strings across the application to ensure uniform
  * user feedback and simplify UI text maintenance.
  */
@@ -18,11 +18,12 @@ public class Message {
 	private static final String SYNTAX_TODO = "todo <description>";
 	private static final String SYNTAX_DEADLINE = "deadline <description> /by <due DT>";
 	private static final String SYNTAX_EVENT = "event <description> /from <start DT> /to <end DT>";
+    private static final String SYNTAX_FIND = "find <keyword>";
 	private static final String SYNTAX_DATE_TIME = "yyyy-MM-dd HHmm(24-H clock)";
 	private static final String SYNTAX_VALID_RANGE = "Index range: ";
 	private static final String SYNTAX_FORMAT = "Format: ";
 
-	// --- Branding Elements --- //
+    // --- Branding Elements --- //
 	public static final String INDENT_4 = "    ";
 	public static final String DIVIDER = "_".repeat(99);
 	// Define the TaskTracker banner logo using external tool from manytools
@@ -43,60 +44,67 @@ public class Message {
 			+ "Type 'help' to see available commands.\n";
 
 	public static final String MSG_GOODBYE = "Baiiiiiii!!! Cya soon!\n";
- 
+
 	public static final String MSG_HELP = "Here are the available commands:\n"
             		+ "  - list : Views all tasks\n"
 			+ "  - " + SYNTAX_TODO + " : Adds a todo task\n"
         		+ "  - " + SYNTAX_DEADLINE + " : Adds a deadline task\n"
         		+ "  - " + SYNTAX_EVENT + " : Adds an event task\n"
         		+ "  - " + SYNTAX_INDEX + " : Manipulates task by index\n"
-        		+ "  - bye : Exits the program\n"
+                + "  - " + SYNTAX_FIND + " : Finds event by keyword\n"
+                + "  - bye : Exits the program\n"
 			+ "  - Date and Time (DT) Format: " + SYNTAX_DATE_TIME + "\n";
 
 	// --- Task Success Responses --- //
 	public static final String MSG_TASK_ADDED = "Got it. I've added this task:\n";
-    	public static final String MSG_TASK_REMOVED = "Noted. I've removed this task:\n";
-    	public static final String MSG_TASK_MARKED = "Well done on completing this task! Marked as done! :D\n";
-    	public static final String MSG_TASK_UNMARKED = "Awwh... marked this as undone. Try finish soon ya? :P\n";
-    	public static final String MSG_NO_TASKS = "No tasks added yet, please add a task first!\n";
+    public static final String MSG_TASK_REMOVED = "Noted. I've removed this task:\n";
+    public static final String MSG_TASK_MARKED = "Well done on completing this task! Marked as done! :D\n";
+    public static final String MSG_TASK_UNMARKED = "Awwh... marked this as undone. Try finish soon ya? :P\n";
+    public static final String MSG_NO_TASKS = "No tasks added yet, please add a task first!\n";
+    public static final String MSG_FIND_MATCHING = "Here are the matching tasks in your list:\n";
 
 	// --- User Input Formats --- //
 	public static final String DATE_TIME_FORMAT = SYNTAX_FORMAT + SYNTAX_DATE_TIME + "\n";
-	public static final String INDEX_FORMAT = SYNTAX_FORMAT + SYNTAX_INDEX + "\n"; 
-	
+	public static final String INDEX_FORMAT = SYNTAX_FORMAT + SYNTAX_INDEX + "\n";
+
 	public static final String TODO_FORMAT = SYNTAX_FORMAT + SYNTAX_TODO + "\n";
 	public static final String DEADLINE_FORMAT = SYNTAX_FORMAT + SYNTAX_DEADLINE + "\n" + SYNTAX_DATE_TIME + "\n";
 	public static final String EVENT_FORMAT = SYNTAX_FORMAT + SYNTAX_EVENT + "\n" + SYNTAX_DATE_TIME + "\n";
+    public static final String FIND_FORMAT = SYNTAX_FORMAT + SYNTAX_FIND + "\n";
 
 	// --- Error Messages --- //
 	public static final String UNKNOWN_COMMAND = "OOPS!! I'm sowwyyy :ccc\n"
 			+ "I don't know what that command means ;(\n"
 			+ "Type 'help' to see available commands.\n";
-	
+    public static final String ERR_EMPTY_FIND = "OOPS!! find keyword cannot be empty.\n" + FIND_FORMAT;
+    public static final String ERR_INVALID_FIND = "OOPS!! find only accepts a single search keyword.\n" + FIND_FORMAT;
+    public static final String ERR_NO_MATCHING_TASKS = "No matching tasks found containing: ";
+
+
 	// List error methods
 	public static final String ERR_TASK_LIST_EMPTY = "No task added yet, please add a task first!\n";
 	public static final String ERR_TASK_LIST_FULL = "OOPS!! Task list full. Please remove any task first!\n";
 	public static final String ERR_MISSING_INDEX = "OOPS!! specify a task index number.\n" + INDEX_FORMAT;
-	public static final String ERR_INVALID_INDEX = "OOPS!! task number must be a valid integer.\n" + INDEX_FORMAT;	
+	public static final String ERR_INVALID_INDEX = "OOPS!! task number must be a valid integer.\n" + INDEX_FORMAT;
 	public static final String ERR_INVALID_DATE_TIME =
         		"OOPS!! date and time must follow the correct format.\n" + DATE_TIME_FORMAT;
 
 	// Todo error methods
-	public static final String ERR_EMPTY_TODO = 
+	public static final String ERR_EMPTY_TODO =
 			"OOPS!! todo description cannot be empty.\n" + TODO_FORMAT;
-	
+
 	// Deadline error methods
-	public static final String ERR_EMPTY_DEADLINE = 
+	public static final String ERR_EMPTY_DEADLINE =
 			"OOPS!! deadline description cannot be empty.\n" + DEADLINE_FORMAT;
-	public static final String ERR_MISSING_BY = 
+	public static final String ERR_MISSING_BY =
 			"OOPS!! specify deadline description and date using '/by'.\n" + DEADLINE_FORMAT;
-	
+
 	// Event error methods
-	public static final String ERR_EMPTY_EVENT = 
+	public static final String ERR_EMPTY_EVENT =
 			"OOPS!! event description cannot be empty.\n" + EVENT_FORMAT;
-	public static final String ERR_MISSING_FROM = 
+	public static final String ERR_MISSING_FROM =
 			"OOPS!! Please specify a valid start time using '/from'.\n" + EVENT_FORMAT;
-	public static final String ERR_MISSING_TO = 
+	public static final String ERR_MISSING_TO =
 			"OOPS!! Please specify a valid end time using '/to'.\n" + EVENT_FORMAT;
 	public static final String ERR_EVENT_CHRONOLOGY =
 			"OOPS!! Event start time cannot be after the end time.\n" + EVENT_FORMAT;

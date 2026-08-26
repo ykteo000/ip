@@ -16,11 +16,12 @@ public enum CommandType {
 	DEADLINE,
 	EVENT,
 	DELETE,
+    FIND,
 	HELP;
 
 	/**
 	 * Converts a raw string command word to its corresponding CommandType.
-	 * 
+	 *
 	 * @param commandWord Raw string command word.
 	 * @return The matching CommandType enum constant.
 	 * @throws TaskTrackerException If the command word is unknown.

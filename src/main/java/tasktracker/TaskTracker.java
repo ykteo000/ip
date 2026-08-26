@@ -103,7 +103,11 @@ public class TaskTracker {
 				int deleteIndex = Parser.parseIndex(argument);
 				ui.showMessage(taskList.deleteTask(deleteIndex));
 				break;
-			case HELP:
+            case FIND:
+                String keyword = Parser.parseFind(argument);
+                ui.showMessage(taskList.findTasks(keyword));
+                break;
+            case HELP:
 				ui.showHelp();
 				break;
 		}
