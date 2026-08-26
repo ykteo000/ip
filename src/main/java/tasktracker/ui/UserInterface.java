@@ -1,14 +1,14 @@
 package tasktracker.ui;
 
-import tasktracker.task.Task;
-import tasktracker.task.TaskList;
 import java.util.Scanner;
 
 /**
  * Handles all user interface operations including reading input and displaying messages.
  */
-public class UserInterface {	
-	// Creates a scanner object to read user's inputs
+public class UserInterface {
+	/**
+     * Creates a scanner object to read user's inputs.
+     */
 	private final Scanner scanner;
 
 	/**
@@ -20,9 +20,8 @@ public class UserInterface {
 
 	/**
 	 * Displays the welcome message and application banner.
-	 */ 
+	 */
 	public void showWelcome() {
-		System.out.println(Message.DIVIDER);
 		System.out.println(Message.BANNER);
 		showMessage(Message.MSG_WELCOME);
 	}
@@ -30,7 +29,7 @@ public class UserInterface {
 	/**
 	 * Reads a line of command input from the terminal.
 	 *
-	 * @return Returns the raw command string entered by the user.
+	 * @return the raw command string entered by the user.
 	 */
 	public String readCommand() {
 		return scanner.nextLine();
@@ -52,7 +51,6 @@ public class UserInterface {
 	 * Displays the farewell message upon exiting the application.
 	 */
 	public void showGoodbye() {
-		System.out.println(Message.DIVIDER);
 		System.out.println(Message.BANNER);
 		showMessage(Message.MSG_GOODBYE);
 	}

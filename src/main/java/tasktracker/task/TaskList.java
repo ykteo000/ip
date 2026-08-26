@@ -1,7 +1,7 @@
 package tasktracker.task;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import tasktracker.exception.TaskTrackerException;
@@ -25,6 +25,8 @@ public class TaskList {
 
 	/**
 	 * Initializes a TaskList with pre-loaded tasks (from Storage).
+     *
+     * @param savedTasks List of tasks loaded from disk.
 	 */
 	public TaskList(List<Task> savedTasks) {
 		this.taskList = savedTasks;
@@ -32,6 +34,8 @@ public class TaskList {
 
 	/**
 	 * Returns the underlying list of tasks for saving.
+     *
+     * @return List of current tasks.
 	 */
 	public List<Task> getTasks() {
 		return this.taskList;
@@ -82,8 +86,8 @@ public class TaskList {
 		}
 
 		return IntStream.range(0, taskList.size())
-			.mapToObj(i -> (i + 1) + ". " + taskList.get(i))
-			.collect(Collectors.joining("\n"));
+			    .mapToObj(i -> (i + 1) + ". " + taskList.get(i))
+			    .collect(Collectors.joining("\n"));
 	}
 
 	/**

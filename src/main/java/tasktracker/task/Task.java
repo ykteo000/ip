@@ -2,9 +2,11 @@ package tasktracker.task;
 
 /**
  * Represents a generic task in the application.
+ *
  * Serves as the base class for specific task types like ToDo, Deadline, and Event.
- */ 
-// Credits: Skeleton class template provided from CS2103T website.
+ *
+ * Credits: Skeleton class template provided from CS2103T website.
+ */
 public abstract class Task {
 	protected String description;
 	protected boolean isDone;
@@ -30,6 +32,8 @@ public abstract class Task {
 
 	/**
 	 * Formats the task into a plain-text string for saving to a file.
+     *
+     * @return A pipe-delimited string representing the task for file storage.
 	 */
 	public abstract String toFileFormat();
 
@@ -47,6 +51,11 @@ public abstract class Task {
 		this.isDone = false;
 	}
 
+    /**
+     * Returns the string representation of the task including its completion status.
+     *
+     * @return Formatted string representation of the task.
+     */
 	@Override
 	public String toString() {
 		return "[" + getStatusIcon() + "] " + this.description;

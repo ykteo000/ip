@@ -1,11 +1,8 @@
 package tasktracker.parser;
 
-import tasktracker.command.CommandType;
 import tasktracker.exception.TaskTrackerException;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
-import tasktracker.task.Task;
-import tasktracker.task.TaskList;
 import tasktracker.task.ToDo;
 import tasktracker.ui.Message;
 import tasktracker.task.TaskDateTime;
@@ -46,7 +43,7 @@ public class Parser {
 	 * @throws TaskTrackerException If the description is empty or missing.
 	 */
 	public static ToDo parseToDo(String argument) throws TaskTrackerException {
-		String description = validateNonEmpty(argument,Message.ERR_EMPTY_TODO);
+		String description = validateNonEmpty(argument, Message.ERR_EMPTY_TODO);
 
 		return new ToDo(description);
 	}
@@ -61,14 +58,15 @@ public class Parser {
 	public static Deadline parseDeadline(String argument) throws TaskTrackerException {
 		validateNonEmpty(argument, Message.ERR_EMPTY_DEADLINE);
 
-		String[] parts = splitArgument(argument," /by ", Message.ERR_MISSING_BY);
+		String[] parts = splitArgument(argument, " /by ", Message.ERR_MISSING_BY);
 
 		return new Deadline(parts[0].trim(), new TaskDateTime(parts[1].trim()));
 	}
 
 	/**
 	 * Parses argument into an Event object.
-	 * Note: Gemini AI used to make the parseEvent validation better to handle improper user input.
+	 *
+     * Note: Gemini AI used to make the parseEvent validation better to handle improper user input.
 	 *
 	 * @param argument The raw input string containing the event description, start time, and end time.
 	 * @return A new Event instance created from the parsed description, start time, and end time.
@@ -126,11 +124,11 @@ public class Parser {
 	 */
 	private static String validateNonEmpty(String argument, String errorMessage)
 			throws TaskTrackerException {
-			if (argument == null || argument.trim().isEmpty()) {
-				throw new TaskTrackerException(errorMessage);
-			}
+		if (argument == null || argument.trim().isEmpty()) {
+			throw new TaskTrackerException(errorMessage);
+		}
 
-			return argument.trim();
+		return argument.trim();
 	}
 
 	/**
@@ -142,14 +140,14 @@ public class Parser {
 	 * @return A two-element array containing trimmed substring parts [part1, part2].
 	 * @throws TaskTrackerException If the delimiter is missing or either resulting part is empty.
 	 */
-	private static String[] splitArgument(String input, String delimiter, String errorMessage) 
+	private static String[] splitArgument(String input, String delimiter, String errorMessage)
 			throws TaskTrackerException {
-			String[] parts = input.split(delimiter, 2);
+		String[] parts = input.split(delimiter, 2);
 
-			if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-				throw new TaskTrackerException(errorMessage);
-			}
+		if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+			throw new TaskTrackerException(errorMessage);
+		}
 
-			return new String[] {parts[0].trim(),parts[1].trim()};
+		return new String[] {parts[0].trim(), parts[1].trim()};
 	}
 }

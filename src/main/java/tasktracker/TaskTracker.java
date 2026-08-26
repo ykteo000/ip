@@ -57,7 +57,7 @@ public class TaskTracker {
 	 * Processes a single user input command and executes the corresponding action.
 	 *
 	 * @param input User input string to process. Initial command is case-insensitive.
-	 * @return Returns true if application should continue running, false if it should exit.
+	 * @return true if application should continue running, false if it should exit.
 	 * @throws TaskTrackerException If input parsing fails or command is unrecognized.
 	 */
 	private boolean processCommand(String input) throws TaskTrackerException {
@@ -113,6 +113,8 @@ public class TaskTracker {
 
 	/**
 	 * Starts the Task Tracker application.
+     *
+     * @param args Command-line arguments passed during startup.
 	 */
 	public static void main(String[] args) {
 		new TaskTracker().run();
