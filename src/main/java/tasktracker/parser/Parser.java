@@ -35,6 +35,17 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses and validates the search keyword argument for the find command.
+     *
+     * @param argument The raw input string containing the search keyword.
+     * @return The trimmed search keyword.
+     * @throws TaskTrackerException If the keyword is missing or empty.
+     */
+    public static String parseFind(String argument) throws TaskTrackerException {
+        return validateNonEmpty(argument, Message.ERR_EMPTY_FIND);
+    }
+
 	/**
 	 * Parses argument into a ToDo object.
 	 *

@@ -75,6 +75,28 @@ public class TaskList {
 				+ Message.MSG_TASK_COUNT(taskList.size());
 	}
 
+    /**
+     * Finds and formats all tasks containing the specified keyword in their description.
+     *
+     * @param keyword The substring keyword to search for.
+     * @return Formatted string containing all matching tasks, or a message indicating no matches.
+     */
+    public String findTasks(String keyword) {
+        String lowerKeyword = keyword.toLowerCase();
+        List<Task> matchingTasks = taskList.stream()
+                .filter(task -> task.toString().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
+
+        if (matchingTasks.isEmpty()) {
+            return Message.ERR_NO_MATCHING_TASKS + keyword + "\n";
+        }
+
+        return Message.MSG_FIND_MATCHING
+                + IntStream.range(0, matchingTasks.size())
+                        .mapToObj(i -> (i + 1) + ". " + matchingTasks.get(i))
+                        .collect(Collectors.joining("\n"));
+    }
+
 	/**
 	 * Generates a formatted string representing all tasks currently stored in the list.
 	 *
