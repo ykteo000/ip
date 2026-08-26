@@ -53,20 +53,6 @@ public class TaskTracker {
         }
     }
 
-<<<<<<< HEAD
-	/**
-	 * Processes a single user input command and executes the corresponding action.
-	 *
-	 * @param input User input string to process. Initial command is case-insensitive.
-	 * @return true if application should continue running, false if it should exit.
-	 * @throws TaskTrackerException If input parsing fails or command is unrecognized.
-	 */
-	private boolean processCommand(String input) throws TaskTrackerException {
-		// Exact single argument command checking
-		if (input.isEmpty()) {
-			return true;
-		}
-=======
     /**
      * Processes a single user input command and executes the corresponding action.
      *
@@ -79,7 +65,6 @@ public class TaskTracker {
         if (input.isEmpty()) {
             return true;
         }
->>>>>>> branch-A-CodingStandard
 
         // (possible) multi-word command routing with validation checks
         String[] parts = input.split(" ", 2);
@@ -126,21 +111,12 @@ public class TaskTracker {
         return true;
     }
 
-<<<<<<< HEAD
 	/**
 	 * Starts the Task Tracker application.
      *
      * @param args Command-line arguments passed during startup.
 	 */
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		new TaskTracker().run();
 	}
-=======
-    /**
-     * Starts the Task Tracker application.
-     */
-    public static void main(String[] args) {
-        new TaskTracker().run();
-    }
->>>>>>> branch-A-CodingStandard
 }

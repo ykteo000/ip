@@ -9,10 +9,10 @@ import tasktracker.task.TaskDateTime;
 
 /**
  * Handles parsing and validation of raw user command strings.
- *
+ *<p>
  * Note: Gemini AI was used substantially at this section to handle input edge cases.
  * Initial idea to create a dedicated parser class was by me, further refinement by AI.
- * Prompt "I currently have these methods in TaskTracker.java but I want to move them."
+ * Prompt "I currently have these methods in TaskTracker.java, but I want to move them."
  * Prompt "How do I create a new Parser class that checks and validates input?"
  * Prompt "I basically only want new Task (or its subclasses) created post validation."
  * Prompt "Guide me on the process and explain to me the inner working mechanism."
