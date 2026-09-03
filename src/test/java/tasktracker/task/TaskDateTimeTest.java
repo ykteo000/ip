@@ -1,10 +1,11 @@
 package tasktracker.task;
 
-import org.junit.jupiter.api.Test;
-import tasktracker.exception.TaskTrackerException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
+import tasktracker.exception.TaskTrackerException;
 
 public class TaskDateTimeTest {
 
@@ -17,7 +18,7 @@ public class TaskDateTimeTest {
     @Test
     public void constructor_invalidFormat_exceptionThrown() {
         assertThrows(TaskTrackerException.class, () -> {
-                     new TaskDateTime("invalid-date-format");
-                     });
+            new TaskDateTime("invalid-date-format");
+        });
     }
 }

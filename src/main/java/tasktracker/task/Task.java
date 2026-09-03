@@ -2,62 +2,71 @@ package tasktracker.task;
 
 /**
  * Represents a generic task in the application.
- *<p>
+ * <p>
  * Serves as the base class for specific task types like ToDo, Deadline, and Event.
- *<p>
+ * <p>
  * Credits: Skeleton class template provided from CS2103T website.
  */
 public abstract class Task {
-	protected String description;
-	protected boolean isDone;
+    protected String description;
+    protected boolean isDone;
 
-	/**
-	 * Constructs a Task instance with specified description and sets completion status to false.
-	 *
-	 * @param description Text describing the task.
-	 */
-	public Task(String description) {
-		this.description = description;
-		this.isDone = false;
-	}
+    /**
+     * Constructs a Task instance with specified description and sets completion status to false.
+     *
+     * @param description Text describing the task.
+     */
+    public Task(String description) {
+        this.description = description;
+        this.isDone = false;
+    }
 
-	/**
-	 * Gets the completion status icon representing whether the task is done.
-	 *
-	 * @return String "X" if done, or a single space if undone.
-	 */
-	public String getStatusIcon() {
-		return (isDone ? "X" : " "); // mark done task with X
-	}
+    /**
+     * Gets the completion status icon representing whether the task is done.
+     *
+     * @return String "X" if done, or a single space if undone.
+     */
+    public String getStatusIcon() {
+        return (isDone ? "X" : " "); // mark done task with X
+    }
 
-	/**
-	 * Formats the task into a plain-text string for saving to a file.
+    /**
+     * Formats the task into a plain-text string for saving to a file.
      *
      * @return A pipe-delimited string representing the task for file storage.
-	 */
-	public abstract String toFileFormat();
+     */
+    public abstract String toFileFormat();
 
-	/**
-	 * Marks this task as completed.
-	 */
-	public void markAsDone() {
-		this.isDone = true;
-	}
+    /**
+     * Marks this task as completed.
+     */
+    public void markAsDone() {
+        this.isDone = true;
+    }
 
-	/**
-	 * Marks this task as uncompleted.
-	 */
-	public void markAsUndone() {
-		this.isDone = false;
-	}
+    /**
+     * Marks this task as uncompleted.
+     */
+    public void markAsUndone() {
+        this.isDone = false;
+    }
+
+    /**
+     * Gets the description of the task.
+     *
+     * @return The task description.
+     */
+    public String getDescription() {
+        return description;
+    }
 
     /**
      * Returns the string representation of the task including its completion status.
      *
      * @return Formatted string representation of the task.
      */
-	@Override
-	public String toString() {
-		return "[" + getStatusIcon() + "] " + this.description;
-	}
+    @Override
+    public String toString() {
+        return "[" + getStatusIcon() + "] " + this.description;
+    }
 }

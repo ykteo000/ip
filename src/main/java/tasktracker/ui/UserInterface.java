@@ -6,10 +6,10 @@ import java.util.Scanner;
  * Handles all user interface operations including reading input and displaying messages.
  */
 public class UserInterface {
-	/**
+    /**
      * Creates a scanner object to read user's inputs.
      */
-	private final Scanner scanner;
+    private final Scanner scanner;
 
     /**
      * Initializes a new UserInterface instance with a System.in scanner.
@@ -18,22 +18,22 @@ public class UserInterface {
         this.scanner = new Scanner(System.in);
     }
 
-	/**
-	 * Displays the welcome message and application banner.
-	 */
-	public void showWelcome() {
-		System.out.println(Message.BANNER);
-		showMessage(Message.MSG_WELCOME);
-	}
+    /**
+     * Displays the welcome message and application banner.
+     */
+    public void showWelcome() {
+        System.out.println(Message.BANNER);
+        showMessage(Message.MSG_WELCOME);
+    }
 
-	/**
-	 * Reads a line of command input from the terminal.
-	 *
-	 * @return the raw command string entered by the user.
-	 */
-	public String readCommand() {
-		return scanner.nextLine();
-	}
+    /**
+     * Reads a line of command input from the terminal.
+     *
+     * @return the raw command string entered by the user.
+     */
+    public String readCommand() {
+        return scanner.nextLine();
+    }
 
     /**
      * Wraps and prints a message inside divider lines with standard indentation.
@@ -47,13 +47,13 @@ public class UserInterface {
         System.out.println(Message.DIVIDER);
     }
 
-	/**
-	 * Displays the farewell message upon exiting the application.
-	 */
-	public void showGoodbye() {
-		System.out.println(Message.BANNER);
-		showMessage(Message.MSG_GOODBYE);
-	}
+    /**
+     * Displays the farewell message upon exiting the application.
+     */
+    public void showGoodbye() {
+        System.out.println(Message.BANNER);
+        showMessage(Message.MSG_GOODBYE);
+    }
 
     /**
      * Displays the help guide showing all available commands and their formats.
@@ -62,5 +62,3 @@ public class UserInterface {
         showMessage(Message.MSG_HELP);
     }
 }
-
-
