@@ -44,14 +44,16 @@ public class UserInterface {
     }
 
     /**
-     * Wraps and prints a message inside divider lines with standard indentation.
+     * Wraps and prints one or more messages inside divider lines with standard indentation.
      *
-     * @param message Message content to display.
+     * @param messages Message lines or blocks to display.
      */
-    public void showMessage(String message) {
+    public void showMessage(String... messages) {
         System.out.println(Message.DIVIDER);
-        String indentedMessage = Message.INDENT_4 + message.replace("\n", "\n" + Message.INDENT_4);
-        System.out.println(indentedMessage);
+        for (String message : messages) {
+            String indentedMessage = Message.INDENT_4 + message.replace("\n", "\n" + Message.INDENT_4);
+            System.out.println(indentedMessage);
+        }
         System.out.println(Message.DIVIDER);
     }
 

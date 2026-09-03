@@ -35,6 +35,15 @@ public class TaskList {
     }
 
     /**
+     * Initializes a TaskList with an arbitrary number of initial tasks.
+     *
+     * @param tasks Initial tasks to populate the list with.
+     */
+    public TaskList(Task... tasks) {
+        this.taskList = new ArrayList<>(List.of(tasks));
+    }
+
+    /**
      * Returns the underlying list of tasks for saving.
      *
      * @return List of current tasks.
@@ -139,4 +148,3 @@ public class TaskList {
         }
     }
 }
-
