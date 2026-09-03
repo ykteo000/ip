@@ -20,6 +20,8 @@ public class TaskTracker {
     private final UserInterface ui;
     private final Storage storage;
     private TaskList taskList;
+    private CommandType lastCommandType;
+    private boolean isErrorResponse = false;
 
     /**
      * Initializes a new TaskTracker instance with initialized UI and TaskList.
@@ -27,105 +29,142 @@ public class TaskTracker {
     public TaskTracker() {
         this.ui = new UserInterface();
         this.storage = new Storage(DEFAULT_FILE_PATH);
+        try {
+            this.taskList = new TaskList(storage.load());
+        } catch (TaskTrackerException e) {
+            this.taskList = new TaskList();
+        }
     }
 
     /**
-     * Runs the main command processing loop until the exit command is received.
+     * Retrieves the welcome message for the GUI.
      */
-    public void run() {
-        ui.showWelcome();
+    public String getWelcomeMessage() {
+        return ui.getWelcomeMessage();
+    }
+
+    /**
+     * Returns the command type of the most recently processed command.
+     */
+    public CommandType getLastCommandType() {
+        return lastCommandType;
+    }
+
+    /**
+     * Returns true if the most recent command execution resulted in an exception.
+     */
+    public boolean isErrorResponse() {
+        return isErrorResponse;
+    }
+
+    /**
+     * Processes input from the GUI and returns the bot's response message.
+     *
+     * @param input User input string from the GUI.
+     * @return Response string to display in the chat dialog.
+     */
+    public String getResponse(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return "";
+        }
 
         try {
-            taskList = new TaskList(storage.load());
+            isErrorResponse = false;
+            return processCommand(input.trim());
         } catch (TaskTrackerException e) {
-            ui.showMessage(e.getMessage());
-            taskList = new TaskList();
-        }
-
-        boolean isRunning = true;
-
-        while (isRunning) {
-            String input = ui.readCommand().trim();
-            try {
-                isRunning = processCommand(input);
-            } catch (TaskTrackerException e) {
-                ui.showMessage(e.getMessage());
-            }
+            isErrorResponse = true;
+            return e.getMessage();
         }
     }
 
     /**
-     * Processes a single user input command and executes the corresponding action.
+     * Processes a single user input command, performs task mutations, and returns output.
      *
-     * @param input User input string to process. Initial command is case-insensitive.
-     * @return true if application should continue running, false if it should exit.
+     * @param input Cleaned user input string.
+     * @return The response message to show to the user.
      * @throws TaskTrackerException If input parsing fails or command is unrecognized.
      */
-    private boolean processCommand(String input) throws TaskTrackerException {
-        // Exact single argument command checking
-        if (input.isEmpty()) {
-            return true;
-        }
-
-        // (possible) multi-word command routing with validation checks
+    private String processCommand(String input) throws TaskTrackerException {
         String[] parts = input.split(" ", 2);
         String commandWord = parts[0].toLowerCase();
         String argument = parts.length > 1 ? parts[1].trim() : "";
 
         boolean isMutated = false;
+        String response;
 
         CommandType command = CommandType.from(commandWord);
+        this.lastCommandType = command;
         switch (command) {
             case BYE:
-                ui.showGoodbye();
-                return false;
+                response = ui.getGoodbyeMessage();
+                break;
             case LIST:
-                ui.showMessage(taskList.getFormattedList());
+                response = taskList.getFormattedList();
                 break;
             case MARK:
                 int markIndex = Parser.parseIndex(argument);
-                ui.showMessage(taskList.setTaskStatus(markIndex, true));
+                response = taskList.setTaskStatus(markIndex, true);
                 isMutated = true;
                 break;
             case UNMARK:
                 int unmarkIndex = Parser.parseIndex(argument);
-                ui.showMessage(taskList.setTaskStatus(unmarkIndex, false));
+                response = taskList.setTaskStatus(unmarkIndex, false);
                 isMutated = true;
                 break;
             case TODO:
                 ToDo toDo = Parser.parseToDo(argument);
-                ui.showMessage(taskList.add(toDo));
+                response = taskList.add(toDo);
                 isMutated = true;
                 break;
             case DEADLINE:
                 Deadline deadline = Parser.parseDeadline(argument);
-                ui.showMessage(taskList.add(deadline));
+                response = taskList.add(deadline);
                 isMutated = true;
                 break;
             case EVENT:
                 Event event = Parser.parseEvent(argument);
-                ui.showMessage(taskList.add(event));
+                response = taskList.add(event);
                 isMutated = true;
                 break;
             case DELETE:
                 int deleteIndex = Parser.parseIndex(argument);
-                ui.showMessage(taskList.deleteTask(deleteIndex));
+                response = taskList.deleteTask(deleteIndex);
                 isMutated = true;
                 break;
             case FIND:
                 String keyword = Parser.parseFind(argument);
-                ui.showMessage(taskList.findTasks(keyword));
+                response = taskList.findTasks(keyword);
                 break;
             case HELP:
-                ui.showHelp();
+                response = Message.MSG_HELP; // Or whatever string ui.showHelp() outputs
                 break;
             default:
                 throw new TaskTrackerException(Message.ERR_UNKNOWN_COMMAND);
         }
+
         if (isMutated) {
             storage.save(taskList.getTasks());
         }
-        return true;
+
+        return response;
+    }
+
+    /**
+     * Legacy Terminal CLI Runner
+     * Runs the main command processing loop until the exit command is received.
+     */
+    public void run() {
+        ui.showWelcome();
+
+        while (true) {
+            String input = ui.readCommand().trim();
+            if (input.equalsIgnoreCase("bye")) {
+                ui.showGoodbye();
+                break;
+            }
+            String response = getResponse(input);
+            ui.showMessage(response);
+        }
     }
 
     /**

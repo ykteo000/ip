@@ -18,6 +18,14 @@ public class UserInterface {
         this.scanner = new Scanner(System.in);
     }
 
+    public String getWelcomeMessage() {
+        return Message.MSG_WELCOME;
+    }
+
+    public String getGoodbyeMessage() {
+        return Message.MSG_GOODBYE;
+    }
+
     /**
      * Displays the welcome message and application banner.
      */
