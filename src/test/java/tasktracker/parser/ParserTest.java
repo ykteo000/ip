@@ -1,12 +1,12 @@
 package tasktracker.parser;
 
-import org.junit.jupiter.api.Test;
-import tasktracker.task.Deadline;
-import tasktracker.task.ToDo;
-import tasktracker.exception.TaskTrackerException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
+import tasktracker.exception.TaskTrackerException;
+import tasktracker.task.ToDo;
 
 public class ParserTest {
 
@@ -19,7 +19,7 @@ public class ParserTest {
     @Test
     public void parseToDo_emptyDescription_exceptionThrown() {
         assertThrows(TaskTrackerException.class, () -> {
-                     Parser.parseToDo("   ");
-                     });
+            Parser.parseToDo("   ");
+        });
     }
 }

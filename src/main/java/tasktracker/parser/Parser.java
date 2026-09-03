@@ -3,13 +3,13 @@ package tasktracker.parser;
 import tasktracker.exception.TaskTrackerException;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
+import tasktracker.task.TaskDateTime;
 import tasktracker.task.ToDo;
 import tasktracker.ui.Message;
-import tasktracker.task.TaskDateTime;
 
 /**
  * Handles parsing and validation of raw user command strings.
- *<p>
+ * <p>
  * Note: Gemini AI was used substantially at this section to handle input edge cases.
  * Initial idea to create a dedicated parser class was by me, further refinement by AI.
  * Prompt "I currently have these methods in TaskTracker.java, but I want to move them."
@@ -46,15 +46,15 @@ public class Parser {
         return validateNonEmpty(argument, Message.ERR_EMPTY_FIND);
     }
 
-	/**
-	 * Parses argument into a ToDo object.
-	 *
-	 * @param argument The raw input string containing the todo description.
-	 * @return A new ToDo instance created from the parsed description.
-	 * @throws TaskTrackerException If the description is empty or missing.
-	 */
-	public static ToDo parseToDo(String argument) throws TaskTrackerException {
-		String description = validateNonEmpty(argument, Message.ERR_EMPTY_TODO);
+    /**
+     * Parses argument into a ToDo object.
+     *
+     * @param argument The raw input string containing the todo description.
+     * @return A new ToDo instance created from the parsed description.
+     * @throws TaskTrackerException If the description is empty or missing.
+     */
+    public static ToDo parseToDo(String argument) throws TaskTrackerException {
+        String description = validateNonEmpty(argument, Message.ERR_EMPTY_TODO);
 
         return new ToDo(description);
     }
@@ -69,95 +69,94 @@ public class Parser {
     public static Deadline parseDeadline(String argument) throws TaskTrackerException {
         validateNonEmpty(argument, Message.ERR_EMPTY_DEADLINE);
 
-		String[] parts = splitArgument(argument, " /by ", Message.ERR_MISSING_BY);
+        String[] parts = splitArgument(argument, " /by ", Message.ERR_MISSING_BY);
+        String description = validateNonEmpty(parts[0], Message.ERR_EMPTY_DEADLINE);
+        String by = validateNonEmpty(parts[1], Message.ERR_MISSING_BY);
 
-        return new Deadline(parts[0].trim(), new TaskDateTime(parts[1].trim()));
+        return new Deadline(description, new TaskDateTime(by));
     }
 
-	/**
-	 * Parses argument into an Event object.
-	 *<p>
+    /**
+     * Parses argument into an Event object.
+     * <p>
      * Note: Gemini AI used to make the parseEvent validation better to handle improper user input.
-	 *
-	 * @param argument The raw input string containing the event description, start time, and end time.
-	 * @return A new Event instance created from the parsed description, start time, and end time.
-	 * @throws TaskTrackerException If any field is empty, or if '/from' or '/to' specifiers are missing.
-	 */
-	public static Event parseEvent(String argument) throws TaskTrackerException {
-		String trimmed = validateNonEmpty(argument, Message.ERR_EMPTY_EVENT);
+     *
+     * @param argument The raw input string containing the event description, start time, and end time.
+     * @return A new Event instance created from the parsed description, start time, and end time.
+     * @throws TaskTrackerException If any field is empty, or if '/from' or '/to' specifiers are missing.
+     */
+    public static Event parseEvent(String argument) throws TaskTrackerException {
+        String trimmed = validateNonEmpty(argument, Message.ERR_EMPTY_EVENT);
 
-		// 1. Verify required delimiters exist
-		if (!trimmed.contains("/from")) {
-			throw new TaskTrackerException(Message.ERR_MISSING_FROM);
-		}
-		if (!trimmed.contains("/to")) {
-			throw new TaskTrackerException(Message.ERR_MISSING_TO);
-		}
+        // 1. Inverted ordering check
+        if (trimmed.contains(" /to ") && trimmed.contains(" /from ")
+                && trimmed.indexOf(" /to ") < trimmed.indexOf(" /from ")) {
+            throw new TaskTrackerException(Message.ERR_OUT_OF_ORDER);
+        }
 
-		// 2. Extract description (before /from)
-		String[] fromParts = trimmed.split("/from", 2);
-		String description = fromParts[0].trim();
-		if (description.isEmpty()) {
-			throw new TaskTrackerException(Message.ERR_EMPTY_EVENT);
-		}
+        // 2. Extract description and the rest using splitArgument
+        String[] fromParts = splitArgument(trimmed, " /from ", Message.ERR_MISSING_FROM);
+        String rawDescription = fromParts[0];
+        String afterFrom = fromParts[1];
 
-		// 3. Extract /from and /to segments
-		String[] toParts = fromParts[1].split("/to", 2);
-		String fromStr = toParts[0].trim();
-		String toStr = (toParts.length > 1) ? toParts[1].trim() : "";
+        // 3. Extract /from and /to segments using splitArgument
+        String[] toParts = splitArgument(afterFrom, " /to ", Message.ERR_MISSING_TO);
+        String rawFromStr = toParts[0];
+        String rawToStr = toParts[1];
 
-		if (fromStr.isEmpty()) {
-			throw new TaskTrackerException(Message.ERR_MISSING_FROM);
-		}
-		if (toStr.isEmpty()) {
-			throw new TaskTrackerException(Message.ERR_MISSING_TO);
-		}
+        // 4. Validate non-empty AND reject '|' characters
+        String description = validateNonEmpty(rawDescription, Message.ERR_EMPTY_EVENT);
+        String fromStr = validateNonEmpty(rawFromStr, Message.ERR_MISSING_FROM);
+        String toStr = validateNonEmpty(rawToStr, Message.ERR_MISSING_TO);
 
-		// 4. Parse date-times (strict parsing handled by TaskDateTime)
-		TaskDateTime startDateTime = new TaskDateTime(fromStr);
-		TaskDateTime endDateTime = new TaskDateTime(toStr);
+        // 5. Parse date-times
+        TaskDateTime startDateTime = new TaskDateTime(fromStr);
+        TaskDateTime endDateTime = new TaskDateTime(toStr);
 
-		// 5. Enforce chronological sequence
-		if (startDateTime.getDateTime().isAfter(endDateTime.getDateTime())) {
-			throw new TaskTrackerException(Message.ERR_EVENT_CHRONOLOGY);
-		}
+        // 6. Enforce chronological sequence
+        if (startDateTime.getDateTime().isAfter(endDateTime.getDateTime())) {
+            throw new TaskTrackerException(Message.ERR_EVENT_CHRONOLOGY);
+        }
 
-		return new Event(description, startDateTime, endDateTime);
-	}
+        return new Event(description, startDateTime, endDateTime);
+    }
 
-	/**
-	 * Ensures an argument string is non-empty after trimming.
-	 *
-	 * @param argument The raw argument string to check.
-	 * @param errorMessage The exception message to throw if validation fails.
-	 * @return The trimmed, non-empty argument string.
-	 * @throws TaskTrackerException If the argument is null or empty after trimming.
-	 */
-	private static String validateNonEmpty(String argument, String errorMessage)
-			throws TaskTrackerException {
-		if (argument == null || argument.trim().isEmpty()) {
-			throw new TaskTrackerException(errorMessage);
-		}
-		return argument.trim();
-	}
+    /**
+     * Ensures an argument string is non-empty after trimming.
+     *
+     * @param argument     The raw argument string to check.
+     * @param errorMessage The exception message to throw if validation fails.
+     * @return The trimmed, non-empty argument string.
+     * @throws TaskTrackerException If the argument is null or empty after trimming.
+     */
+    private static String validateNonEmpty(String argument, String errorMessage)
+            throws TaskTrackerException {
+        if (argument == null || argument.trim().isEmpty()) {
+            throw new TaskTrackerException(errorMessage);
+        } else if (argument.contains("|")) {
+            throw new TaskTrackerException(Message.ERR_NO_DELIMITER);
+        }
+        return argument.trim();
+    }
 
-	/**
-	 * Splits an argument string using the given delimiter and validates both halves are non-empty.
-	 *
-	 * @param input The input string to split.
-	 * @param delimiter The delimiter string to split on (e.g., " /by ").
-	 * @param errorMessage The exception message to throw if splitting or validation fails.
-	 * @return A two-element array containing trimmed substring parts [part1, part2].
-	 * @throws TaskTrackerException If the delimiter is missing or either resulting part is empty.
-	 */
-	private static String[] splitArgument(String input, String delimiter, String errorMessage)
-			throws TaskTrackerException {
-		String[] parts = input.split(delimiter, 2);
+    /**
+     * Splits an argument string using the given delimiter and validates both halves are non-empty.
+     *
+     * @param input        The input string to split.
+     * @param delimiter    The delimiter string to split on (e.g., " /by ").
+     * @param errorMessage The exception message to throw if splitting or validation fails.
+     * @return A two-element array containing trimmed substring parts [part1, part2].
+     * @throws TaskTrackerException If the delimiter is missing or either resulting part is empty.
+     */
+    private static String[] splitArgument(String input, String delimiter, String errorMessage)
+            throws TaskTrackerException {
+        String[] parts = input.split(delimiter, 2);
 
-		if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-			throw new TaskTrackerException(errorMessage);
-		}
+        if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+            throw new TaskTrackerException(errorMessage);
+        }
 
-		return new String[] {parts[0].trim(), parts[1].trim()};
-	}
+        return new String[]{parts[0].trim(), parts[1].trim()};
+    }
+
 }
