@@ -44,6 +44,7 @@ checkstyle {
 
 test {
     useJUnitPlatform()
+    enableAssertions = true
 
     testLogging {
         events 'passed', 'skipped', 'failed'
@@ -72,5 +73,6 @@ shadowJar {
 }
 
 run {
+    enableAssertions = true
     standardInput = System.in
 }

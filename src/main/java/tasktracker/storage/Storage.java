@@ -46,6 +46,8 @@ public class Storage {
      * @param filePath The path where tasks are saved.
      */
     public Storage(String filePath) {
+        assert filePath != null && !filePath.trim().isEmpty()
+                : "File path for Storage must not be null or blank.";
         this.filePath = filePath;
     }
 
@@ -59,6 +61,8 @@ public class Storage {
      * @throws TaskTrackerException If an I/O error occurs while writing to the file.
      */
     public void save(List<Task> tasks) throws TaskTrackerException {
+        assert tasks != null : "Task list to save must not be null.";
+        assert filePath != null && !filePath.trim().isEmpty() : "File path invariant violated.";
         Path targetPath = Paths.get(filePath);
         Path parentDir = targetPath.getParent();
 
@@ -74,6 +78,7 @@ public class Storage {
 
             try (BufferedWriter writer = Files.newBufferedWriter(tempPath)) {
                 for (Task task : tasks) {
+                    assert task != null : "Cannot serialize a null task to file.";
                     writer.write(task.toFileFormat());
                     writer.newLine();
                 }

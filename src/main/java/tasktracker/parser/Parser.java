@@ -117,6 +117,8 @@ public class Parser {
         if (startDateTime.getDateTime().isAfter(endDateTime.getDateTime())) {
             throw new TaskTrackerException(Message.ERR_EVENT_CHRONOLOGY);
         }
+        assert !startDateTime.getDateTime().isAfter(endDateTime.getDateTime())
+                : "Event start date must be before or equal to end date.";
 
         return new Event(description, startDateTime, endDateTime);
     }
@@ -131,6 +133,8 @@ public class Parser {
      */
     private static String validateNonEmpty(String argument, String errorMessage)
             throws TaskTrackerException {
+        assert errorMessage != null && !errorMessage.trim().isEmpty()
+                : "Error message passed to validateNonEmpty must not be blank.";
         if (argument == null || argument.trim().isEmpty()) {
             throw new TaskTrackerException(errorMessage);
         } else if (argument.contains("|")) {
@@ -150,6 +154,11 @@ public class Parser {
      */
     private static String[] splitArgument(String input, String delimiter, String errorMessage)
             throws TaskTrackerException {
+        assert delimiter != null && !delimiter.isEmpty()
+                : "Delimiter passed to splitArgument must not be empty.";
+        assert errorMessage != null && !errorMessage.trim().isEmpty()
+                : "Error message passed to splitArgument must not be blank.";
+
         String[] parts = input.split(delimiter, 2);
 
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
