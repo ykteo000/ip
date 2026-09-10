@@ -90,7 +90,7 @@ public class TaskList {
         int initialSize = taskList.size();
         Task removedTask = taskList.remove(toZeroBasedIndex(index));
         assert removedTask != null : "Removed task should not be null.";
-        assert taskList.size() = initialSize - 1 : "Tasklist size should decrease by 1 per delete.";
+        assert taskList.size() == initialSize - 1 : "Tasklist size should decrease by 1 per delete.";
         return Message.MSG_TASK_REMOVED + " " + removedTask + NEWLINE
                 + Message.getMsgTaskCount(taskList.size());
     }
