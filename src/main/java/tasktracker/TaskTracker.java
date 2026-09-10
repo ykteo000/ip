@@ -89,64 +89,83 @@ public class TaskTracker {
         String commandWord = parts[0].toLowerCase();
         String argument = parts.length > 1 ? parts[1].trim() : "";
 
-        boolean isMutated = false;
-        String response;
-
         CommandType command = CommandType.from(commandWord);
         this.lastCommandType = command;
+
+        String response = executeCommand(command, argument);
+        saveIfMutated(command);
+
+        return response;
+    }
+
+    private String executeCommand(CommandType command, String argument) throws TaskTrackerException {
         switch (command) {
             case BYE:
-                response = ui.getGoodbyeMessage();
-                break;
+                return ui.getGoodbyeMessage();
             case LIST:
-                response = taskList.getFormattedList();
-                break;
+                return taskList.getFormattedList();
             case MARK:
-                int markIndex = Parser.parseIndex(argument);
-                response = taskList.setTaskStatus(markIndex, true);
-                isMutated = true;
-                break;
+                return handleTaskStatusChange(argument, true);
             case UNMARK:
-                int unmarkIndex = Parser.parseIndex(argument);
-                response = taskList.setTaskStatus(unmarkIndex, false);
-                isMutated = true;
-                break;
+                return handleTaskStatusChange(argument, false);
             case TODO:
-                ToDo toDo = Parser.parseToDo(argument);
-                response = taskList.add(toDo);
-                isMutated = true;
-                break;
+                return handleAddToDo(argument);
             case DEADLINE:
-                Deadline deadline = Parser.parseDeadline(argument);
-                response = taskList.add(deadline);
-                isMutated = true;
-                break;
+                return handleAddDeadline(argument);
             case EVENT:
-                Event event = Parser.parseEvent(argument);
-                response = taskList.add(event);
-                isMutated = true;
-                break;
+                return handleAddEvent(argument);
             case DELETE:
-                int deleteIndex = Parser.parseIndex(argument);
-                response = taskList.deleteTask(deleteIndex);
-                isMutated = true;
-                break;
+                return handleDeleteTask(argument);
             case FIND:
-                String keyword = Parser.parseFind(argument);
-                response = taskList.findTasks(keyword);
-                break;
+                return taskList.findTasks(Parser.parseFind(argument));
             case HELP:
-                response = Message.MSG_HELP; // Or whatever string ui.showHelp() outputs
-                break;
+                return Message.MSG_HELP;
             default:
                 throw new TaskTrackerException(Message.ERR_UNKNOWN_COMMAND);
         }
+    }
 
-        if (isMutated) {
-            storage.save(taskList.getTasks());
+    private String handleTaskStatusChange(String argument, boolean isDone) throws TaskTrackerException {
+        int index = Parser.parseIndex(argument);
+        return taskList.setTaskStatus(index, isDone);
+    }
+
+    private String handleAddToDo(String argument) throws TaskTrackerException {
+        ToDo toDo = Parser.parseToDo(argument);
+        return taskList.add(toDo);
+    }
+
+    private String handleAddDeadline(String argument) throws TaskTrackerException {
+        Deadline deadline = Parser.parseDeadline(argument);
+        return taskList.add(deadline);
+    }
+
+    private String handleAddEvent(String argument) throws TaskTrackerException {
+        Event event = Parser.parseEvent(argument);
+        return taskList.add(event);
+    }
+
+    private String handleDeleteTask(String argument) throws TaskTrackerException {
+        int index = Parser.parseIndex(argument);
+        return taskList.deleteTask(index);
+    }
+
+    /**
+     * Persists tasks to disk if the command alters the task list state.
+     */
+    private void saveIfMutated(CommandType command) throws TaskTrackerException {
+        switch (command) {
+            case MARK:
+            case UNMARK:
+            case TODO:
+            case DEADLINE:
+            case EVENT:
+            case DELETE:
+                storage.save(taskList.getTasks());
+                break;
+            default:
+                break;
         }
-
-        return response;
     }
 
     /**
