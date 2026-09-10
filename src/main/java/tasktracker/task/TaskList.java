@@ -26,7 +26,7 @@ public class TaskList {
     }
 
     /**
-     * Initializes a TaskList with pre-loaded tasks (from Storage).
+     * Initializes a TaskList with preloaded tasks (from Storage).
      *
      * @param savedTasks List of tasks loaded from disk.
      */
@@ -97,7 +97,7 @@ public class TaskList {
         String lowerKeyword = keyword.toLowerCase();
         List<Task> matchingTasks = taskList.stream()
                 .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
-                .collect(Collectors.toList());
+                .toList();
 
         if (matchingTasks.isEmpty()) {
             return Message.ERR_NO_MATCHING_TASKS + keyword + "\n";
