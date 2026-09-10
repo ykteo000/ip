@@ -4,8 +4,8 @@ package tasktracker.task;
  * Represents an Event task that occurs within a specified start and end time range.
  */
 public class Event extends Task {
-    protected TaskDateTime from;
-    protected TaskDateTime to;
+    private final TaskDateTime from;
+    private final TaskDateTime to;
 
     /**
      * Constructs an Event instance with the specified description, start time, and end time.
@@ -18,6 +18,24 @@ public class Event extends Task {
         super(description);
         this.from = from;
         this.to = to;
+    }
+
+    /**
+     * Gets the start date and time of the event.
+     *
+     * @return The start {@code TaskDateTime}.
+     */
+    public TaskDateTime getFrom() {
+        return this.from;
+    }
+
+    /**
+     * Gets the end date and time of the event.
+     *
+     * @return The end {@code TaskDateTime}.
+     */
+    public TaskDateTime getTo() {
+        return this.to;
     }
 
     /**
@@ -38,7 +56,7 @@ public class Event extends Task {
      */
     @Override
     public String toFileFormat() {
-        return "E | " + (isDone ? "1" : "0") + " | " + description + " | "
+        return "E | " + toFileFormatPrefix() + " | "
                 + from.toFileString() + " | " + to.toFileString();
     }
 }

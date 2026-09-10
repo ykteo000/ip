@@ -4,7 +4,7 @@ package tasktracker.task;
  * Represents a Deadline task that needs to be completed by a specific date or time.
  */
 public class Deadline extends Task {
-    protected TaskDateTime by;
+    private final TaskDateTime by;
 
     /**
      * Constructs a Deadline instance with the specified description and deadline time.
@@ -15,6 +15,15 @@ public class Deadline extends Task {
     public Deadline(String description, TaskDateTime by) {
         super(description);
         this.by = by;
+    }
+
+    /**
+     * Gets the due date and time of the deadline.
+     *
+     * @return The due {@code TaskDateTime}.
+     */
+    public TaskDateTime getBy() {
+        return this.by;
     }
 
     /**
@@ -34,6 +43,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileFormat() {
-        return "D | " + (isDone ? "1" : "0") + " | " + description + " | " + by.toFileString();
+        return "D | " + toFileFormatPrefix() + " | " + by.toFileString();
     }
 }
