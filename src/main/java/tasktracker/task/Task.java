@@ -8,8 +8,8 @@ package tasktracker.task;
  * Credits: Skeleton class template provided from CS2103T website.
  */
 public abstract class Task {
-    protected String description;
-    protected boolean isDone;
+    private final String description;
+    private boolean isDone;
 
     /**
      * Constructs a Task instance with specified description and sets completion status to false.
@@ -58,6 +58,13 @@ public abstract class Task {
      */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Returns the common prefix for disk serialization.
+     */
+    protected String toFileFormatPrefix() {
+        return (this.isDone ? "1" : "0") + " | " + this.description;
     }
 
     /**

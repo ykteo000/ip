@@ -6,6 +6,8 @@ import java.util.Scanner;
  * Handles all user interface operations including reading input and displaying messages.
  */
 public class UserInterface {
+    private static final String NEWLINE = "\n";
+
     /**
      * Creates a scanner object to read user's inputs.
      */
@@ -18,16 +20,26 @@ public class UserInterface {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Retrieves the welcome message text for GUI.
+     *
+     * @return The formatted welcome message.
+     */
     public String getWelcomeMessage() {
         return Message.MSG_WELCOME;
     }
 
+    /**
+     * Retrieves the goodbye message text for GUI.
+     *
+     * @return The formatted goodbye message.
+     */
     public String getGoodbyeMessage() {
         return Message.MSG_GOODBYE;
     }
 
     /**
-     * Displays the welcome message and application banner.
+     * Displays the welcome message and application banner for CLI.
      */
     public void showWelcome() {
         System.out.println(Message.BANNER);
@@ -51,14 +63,24 @@ public class UserInterface {
     public void showMessage(String... messages) {
         System.out.println(Message.DIVIDER);
         for (String message : messages) {
-            String indentedMessage = Message.INDENT_4 + message.replace("\n", "\n" + Message.INDENT_4);
-            System.out.println(indentedMessage);
+            System.out.println(formatIndented(message));
         }
         System.out.println(Message.DIVIDER);
     }
 
     /**
-     * Displays the farewell message upon exiting the application.
+     * Indents every line of the given message with standard 4-space indentation.
+     *
+     * @param message The text block to indent.
+     * @return The indented message string.
+     */
+    private String formatIndented(String message) {
+        String newlineIndent = NEWLINE + Message.INDENT_4;
+        return Message.INDENT_4 + message.replace(NEWLINE, newlineIndent);
+    }
+
+    /**
+     * Displays the farewell message upon exiting the application for CLI.
      */
     public void showGoodbye() {
         System.out.println(Message.BANNER);
