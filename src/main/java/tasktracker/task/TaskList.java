@@ -16,6 +16,9 @@ import tasktracker.ui.Message;
 public class TaskList {
     // Set a limit to 100 to prevent user misuse.
     private static final int MAX_TASKS = 100;
+    private static final String NEWLINE = "\n";
+    private static final String ITEM_SEPARATOR = ". ";
+
     private final List<Task> taskList;
 
     /**
@@ -65,7 +68,7 @@ public class TaskList {
         }
 
         taskList.add(task);
-        return Message.MSG_TASK_ADDED + " " + task + "\n"
+        return Message.MSG_TASK_ADDED + " " + task + NEWLINE
                 + Message.getMsgTaskCount(taskList.size());
     }
 
@@ -77,13 +80,10 @@ public class TaskList {
      * @throws TaskTrackerException If the task index is out of bounds.
      */
     public String deleteTask(int index) throws TaskTrackerException {
-        if (index < 1 || index > taskList.size()) {
-            throw new TaskTrackerException(Message.getErrOutOfBounds(taskList.size()));
-        }
+        validateIndex(index);
+        Task removedTask = taskList.remove(toZeroBasedIndex(index));
 
-        Task removedTask = taskList.remove(index - 1);
-
-        return Message.MSG_TASK_REMOVED + " " + removedTask + "\n"
+        return Message.MSG_TASK_REMOVED + " " + removedTask + NEWLINE
                 + Message.getMsgTaskCount(taskList.size());
     }
 
@@ -94,19 +94,13 @@ public class TaskList {
      * @return Formatted string containing all matching tasks, or a message indicating no matches.
      */
     public String findTasks(String keyword) {
-        String lowerKeyword = keyword.toLowerCase();
-        List<Task> matchingTasks = taskList.stream()
-                .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
-                .toList();
+        List<Task> matchingTasks = filterTasksByKeyword(keyword);
 
         if (matchingTasks.isEmpty()) {
-            return Message.ERR_NO_MATCHING_TASKS + keyword + "\n";
+            return Message.ERR_NO_MATCHING_TASKS + keyword + NEWLINE;
         }
 
-        return Message.MSG_FIND_MATCHING
-                + IntStream.range(0, matchingTasks.size())
-                .mapToObj(i -> (i + 1) + ". " + matchingTasks.get(i))
-                .collect(Collectors.joining("\n"));
+        return Message.MSG_FIND_MATCHING + formatNumberedList(matchingTasks);
     }
 
     /**
@@ -133,9 +127,7 @@ public class TaskList {
      * @throws TaskTrackerException If the task index is out of bounds.
      */
     public String setTaskStatus(int index, boolean isDone) throws TaskTrackerException {
-        if (index < 1 || index > taskList.size()) {
-            throw new TaskTrackerException(Message.getErrOutOfBounds(taskList.size()));
-        }
+        validateIndex(index);
 
         Task taskToUpdate = taskList.get(index - 1);
 
@@ -146,5 +138,43 @@ public class TaskList {
             taskToUpdate.markAsUndone();
             return Message.MSG_TASK_UNMARKED + " " + taskToUpdate;
         }
+    }
+
+    /**
+     * Validates that the provided 1-based index falls within the active bounds of the list.
+     *
+     * @param index 1-based index to check.
+     * @throws TaskTrackerException If index is less than 1 or exceeds current list size.
+     */
+    private void validateIndex(int index) throws TaskTrackerException {
+        if (index < 1 || index > taskList.size()) {
+            throw new TaskTrackerException(Message.getErrOutOfBounds(taskList.size()));
+        }
+    }
+
+    /**
+     * Converts a 1-based index into an internal 0-based collection index.
+     */
+    private int toZeroBasedIndex(int oneBasedIndex) {
+        return oneBasedIndex - 1;
+    }
+
+    /**
+     * Filters tasks whose descriptions match the provided keyword (case-insensitive).
+     */
+    private List<Task> filterTasksByKeyword(String keyword) {
+        String lowerKeyword = keyword.toLowerCase();
+        return taskList.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Formats a list of tasks into a numbered string representation.
+     */
+    private String formatNumberedList(List<Task> tasks) {
+        return IntStream.range(0, tasks.size())
+                .mapToObj(i -> (i + 1) + ITEM_SEPARATOR + tasks.get(i))
+                .collect(Collectors.joining(NEWLINE));
     }
 }

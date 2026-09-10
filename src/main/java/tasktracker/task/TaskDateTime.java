@@ -15,17 +15,15 @@ import tasktracker.ui.Message;
  * UI display formatting, and file save formatting.
  */
 public class TaskDateTime {
-    private static final DateTimeFormatter INPUT_FORMATTER =
-            DateTimeFormatter.ofPattern("uuuu-MM-dd HHmm")
+    private static final String DATE_TIME_PATTERN = "uuuu-MM-dd HHmm";
+    private static final DateTimeFormatter STANDARD_FORMATTER =
+            DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)
                     .withResolverStyle(ResolverStyle.STRICT);
 
     private static final DateTimeFormatter DISPLAY_FORMATTER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendPattern("MMM d yyyy, h:mm a")
             .toFormatter(Locale.ENGLISH);
-
-    private static final DateTimeFormatter FILE_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
 
     private final LocalDateTime dateTime;
 
@@ -37,10 +35,13 @@ public class TaskDateTime {
      * @throws TaskTrackerException If the input string cannot be parsed using supported formats.
      */
     public TaskDateTime(String rawDateTime) throws TaskTrackerException {
+        if (rawDateTime == null) {
+            throw new TaskTrackerException(Message.ERR_INVALID_DATE_TIME);
+        }
         String trimmed = rawDateTime.trim();
         try {
             // Standard CLI input: 2026-12-31 2359
-            this.dateTime = LocalDateTime.parse(trimmed, INPUT_FORMATTER);
+            this.dateTime = LocalDateTime.parse(trimmed, STANDARD_FORMATTER);
         } catch (DateTimeParseException e) {
             throw new TaskTrackerException(Message.ERR_INVALID_DATE_TIME);
         }
@@ -52,7 +53,17 @@ public class TaskDateTime {
      * @return The stored LocalDateTime object.
      */
     public LocalDateTime getDateTime() {
-        return dateTime;
+        return this.dateTime;
+    }
+
+    /**
+     * Checks if this date-time occurs strictly after another date-time.
+     *
+     * @param other The other TaskDateTime to compare against.
+     * @return True if this date-time is after the other date-time, false otherwise.
+     */
+    public boolean isAfter(TaskDateTime other) {
+        return this.dateTime.isAfter(other.dateTime);
     }
 
     /**
@@ -61,7 +72,7 @@ public class TaskDateTime {
      * @return Formatted date-time display string.
      */
     public String toDisplayString() {
-        return dateTime.format(DISPLAY_FORMATTER);
+        return this.dateTime.format(DISPLAY_FORMATTER);
     }
 
     /**
@@ -70,7 +81,7 @@ public class TaskDateTime {
      * @return Standardized date-time string formatted for file persistence.
      */
     public String toFileString() {
-        return dateTime.format(FILE_FORMATTER);
+        return this.dateTime.format(STANDARD_FORMATTER);
     }
 
     /**
