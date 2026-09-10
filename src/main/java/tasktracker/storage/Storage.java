@@ -15,6 +15,7 @@ import java.util.Scanner;
 import tasktracker.exception.TaskTrackerException;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
+import tasktracker.task.FixedDurationTask;
 import tasktracker.task.Task;
 import tasktracker.task.TaskDateTime;
 import tasktracker.task.ToDo;
@@ -36,6 +37,7 @@ public class Storage {
     private static final String TYPE_TODO = "T";
     private static final String TYPE_DEADLINE = "D";
     private static final String TYPE_EVENT = "E";
+    private static final String TYPE_FIXED = "F";
     private static final String TEMP_FILE_PREFIX = "tasks_";
     private static final String TEMP_FILE_SUFFIX = ".tmp";
 
@@ -180,6 +182,9 @@ public class Storage {
             case TYPE_EVENT -> {
                 return createEvent(description, parts, line);
             }
+            case TYPE_FIXED -> {
+                return createFixedDurationTask(description, parts, line);
+            }
             default -> throw new TaskTrackerException(Message.ERR_FILE_UNKNOWN + type);
         }
     }
@@ -207,5 +212,17 @@ public class Storage {
         } catch (TaskTrackerException e) {
             throw new TaskTrackerException(Message.ERR_FILE_CORRUPT + line);
         }
+    }
+
+    private FixedDurationTask createFixedDurationTask(String description, String[] parts, String line)
+            throws TaskTrackerException {
+        if (parts.length < 4) {
+            throw new TaskTrackerException(Message.ERR_FILE_FIXED + line);
+        }
+        String duration = parts[3].trim();
+        if (duration.isEmpty()) {
+            throw new TaskTrackerException(Message.ERR_FILE_CORRUPT + line);
+        }
+        return new FixedDurationTask(description, duration);
     }
 }

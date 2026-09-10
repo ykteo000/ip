@@ -6,6 +6,7 @@ import tasktracker.parser.Parser;
 import tasktracker.storage.Storage;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
+import tasktracker.task.FixedDurationTask;
 import tasktracker.task.TaskList;
 import tasktracker.task.ToDo;
 import tasktracker.ui.Message;
@@ -114,6 +115,8 @@ public class TaskTracker {
                 return handleAddDeadline(argument);
             case EVENT:
                 return handleAddEvent(argument);
+            case FIXED:
+                return handleAddFixedDurationTask(argument);
             case DELETE:
                 return handleDeleteTask(argument);
             case FIND:
@@ -145,6 +148,11 @@ public class TaskTracker {
         return taskList.add(event);
     }
 
+    private String handleAddFixedDurationTask(String argument) throws TaskTrackerException {
+        FixedDurationTask fixedTask = Parser.parseFixedDurationTask(argument);
+        return taskList.add(fixedTask);
+    }
+
     private String handleDeleteTask(String argument) throws TaskTrackerException {
         int index = Parser.parseIndex(argument);
         return taskList.deleteTask(index);
@@ -160,6 +168,7 @@ public class TaskTracker {
             case TODO:
             case DEADLINE:
             case EVENT:
+            case FIXED:
             case DELETE:
                 storage.save(taskList.getTasks());
                 break;

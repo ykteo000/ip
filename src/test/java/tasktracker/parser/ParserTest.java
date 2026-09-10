@@ -3,29 +3,192 @@ package tasktracker.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import tasktracker.exception.TaskTrackerException;
+import tasktracker.task.Deadline;
 import tasktracker.task.Event;
+import tasktracker.task.FixedDurationTask;
+import tasktracker.task.ToDo;
 import tasktracker.ui.Message;
 
 public class ParserTest {
 
-    // --- Happy Paths ---
+    // =========================================================================
+    // Index Parsing Tests (mark / unmark / delete)
+    // =========================================================================
+
+    @Test
+    public void parseIndex_validInteger_returnsParsedIndex() throws TaskTrackerException {
+        assertEquals(1, Parser.parseIndex("1"));
+        assertEquals(42, Parser.parseIndex("  42  "));
+    }
+
+    @Test
+    public void parseIndex_emptyOrNull_throwsException() {
+        TaskTrackerException exEmpty = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseIndex("");
+        });
+        assertEquals(Message.ERR_MISSING_INDEX, exEmpty.getMessage());
+
+        TaskTrackerException exBlank = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseIndex("   ");
+        });
+        assertEquals(Message.ERR_MISSING_INDEX, exBlank.getMessage());
+    }
+
+    @Test
+    public void parseIndex_nonNumeric_throwsException() {
+        TaskTrackerException exAlpha = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseIndex("abc");
+        });
+        assertEquals(Message.ERR_INVALID_INDEX, exAlpha.getMessage());
+
+        TaskTrackerException exSpecial = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseIndex("one");
+        });
+        assertEquals(Message.ERR_INVALID_INDEX, exSpecial.getMessage());
+    }
+
+    @Test
+    public void parseIndex_containsPipeCharacter_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseIndex("1|2");
+        });
+        assertEquals(Message.ERR_NO_DELIMITER, ex.getMessage());
+    }
+
+    // =========================================================================
+    // Find Keyword Parsing Tests
+    // =========================================================================
+
+    @Test
+    public void parseFind_validKeyword_returnsTrimmedKeyword() throws TaskTrackerException {
+        assertEquals("book", Parser.parseFind("book"));
+        assertEquals("study session", Parser.parseFind("   study session   "));
+    }
+
+    @Test
+    public void parseFind_emptyInput_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFind("   ");
+        });
+        assertEquals(Message.ERR_EMPTY_FIND, ex.getMessage());
+    }
+
+    @Test
+    public void parseFind_containsPipeCharacter_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFind("read | book");
+        });
+        assertEquals(Message.ERR_NO_DELIMITER, ex.getMessage());
+    }
+
+    // =========================================================================
+    // ToDo Parsing Tests
+    // =========================================================================
+
+    @Test
+    public void parseToDo_validDescription_success() throws TaskTrackerException {
+        ToDo todo = Parser.parseToDo("read textbook chapter 4");
+        assertNotNull(todo);
+        assertEquals("read textbook chapter 4", todo.getDescription());
+    }
+
+    @Test
+    public void parseToDo_whitespacePadding_trimmedProperly() throws TaskTrackerException {
+        ToDo todo = Parser.parseToDo("   submit survey   ");
+        assertNotNull(todo);
+        assertEquals("submit survey", todo.getDescription());
+    }
+
+    @Test
+    public void parseToDo_emptyInput_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseToDo("   ");
+        });
+        assertEquals(Message.ERR_EMPTY_TODO, ex.getMessage());
+    }
+
+    @Test
+    public void parseToDo_containsPipeCharacter_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseToDo("buy | milk");
+        });
+        assertEquals(Message.ERR_NO_DELIMITER, ex.getMessage());
+    }
+
+    // =========================================================================
+    // Deadline Parsing Tests
+    // =========================================================================
+
+    @Test
+    public void parseDeadline_validInput_success() throws TaskTrackerException {
+        Deadline deadline = Parser.parseDeadline("submit assignment /by 2026-10-15 2359");
+        assertNotNull(deadline);
+        assertEquals("submit assignment", deadline.getDescription());
+    }
+
+    @Test
+    public void parseDeadline_whitespacePadding_trimmedProperly() throws TaskTrackerException {
+        Deadline deadline = Parser.parseDeadline("   return library books   /by   2026-11-01 1800  ");
+        assertNotNull(deadline);
+        assertEquals("return library books", deadline.getDescription());
+    }
+
+    @Test
+    public void parseDeadline_emptyInput_throwsException() {
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseDeadline("");
+        });
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseDeadline("   ");
+        });
+    }
+
+    @Test
+    public void parseDeadline_missingByDelimiter_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseDeadline("submit assignment 2026-10-15 2359");
+        });
+        assertEquals(Message.ERR_MISSING_BY, ex.getMessage());
+    }
+
+    @Test
+    public void parseDeadline_missingDescription_throwsException() {
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseDeadline(" /by 2026-10-15 2359");
+        });
+    }
+
+    @Test
+    public void parseDeadline_emptyDate_throwsException() {
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseDeadline("submit assignment /by ");
+        });
+    }
+
+    @Test
+    public void parseDeadline_containsPipeCharacter_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseDeadline("submit | report /by 2026-10-15 2359");
+        });
+        assertEquals(Message.ERR_NO_DELIMITER, ex.getMessage());
+    }
+
+    // =========================================================================
+    // Event Parsing Tests
+    // =========================================================================
 
     @Test
     public void parseEvent_validInput_success() throws TaskTrackerException {
-        // Adjust date string format to match whatever your TaskDateTime accepts
         String input = "project meeting /from 2026-10-15 1400 /to 2026-10-15 1600";
         Event event = Parser.parseEvent(input);
 
         assertNotNull(event);
         assertEquals("project meeting", event.getDescription());
     }
-
-    // --- Failure Modes & Edge Cases ---
 
     @Test
     public void parseEvent_emptyInput_throwsException() {
@@ -55,7 +218,6 @@ public class ParserTest {
 
     @Test
     public void parseEvent_invertedDelimiters_throwsException() {
-        // /to appears before /from
         TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
             Parser.parseEvent("project meeting /to 2026-10-15 1600 /from 2026-10-15 1400");
         });
@@ -71,7 +233,6 @@ public class ParserTest {
 
     @Test
     public void parseEvent_emptyTimes_throwsException() {
-        // Empty /from or empty /to
         assertThrows(TaskTrackerException.class, () -> {
             Parser.parseEvent("meeting /from  /to 2026-10-15 1600");
         });
@@ -82,7 +243,6 @@ public class ParserTest {
 
     @Test
     public void parseEvent_endBeforeStartChronology_throwsException() {
-        // End time is earlier than start time
         TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
             Parser.parseEvent("meeting /from 2026-10-15 1800 /to 2026-10-15 1400");
         });
@@ -99,8 +259,6 @@ public class ParserTest {
 
     @Test
     public void parseEvent_bothFromAndToMissingValues_throwsMissingFromException() {
-        // Reproduces the exact bug you spotted: "event kirk anniversary /from /to"
-        // It should reject /from first before complaining about /to
         TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
             Parser.parseEvent("kirk anniversary /from /to");
         });
@@ -109,7 +267,6 @@ public class ParserTest {
 
     @Test
     public void parseEvent_sameStartAndEndTime_success() throws TaskTrackerException {
-        // Boundary case: event start and end at the exact same minute
         String input = "instant workshop /from 2026-10-15 1400 /to 2026-10-15 1400";
         Event event = Parser.parseEvent(input);
 
@@ -119,7 +276,6 @@ public class ParserTest {
 
     @Test
     public void parseEvent_pipeInDateFields_throwsException() {
-        // Ensures '|' is rejected even if smuggled into the /from or /to section
         TaskTrackerException exFrom = assertThrows(TaskTrackerException.class, () -> {
             Parser.parseEvent("meeting /from 2026-10-15 | 1400 /to 2026-10-15 1600");
         });
@@ -133,7 +289,6 @@ public class ParserTest {
 
     @Test
     public void parseEvent_whitespacePadding_trimmedProperly() throws TaskTrackerException {
-        // Ensures extra spaces around description and dates don't break parsing
         String input = "   project meeting    /from    2026-10-15 1400    /to    2026-10-15 1600   ";
         Event event = Parser.parseEvent(input);
 
@@ -143,9 +298,90 @@ public class ParserTest {
 
     @Test
     public void parseEvent_delimitersWithoutSurroundingSpaces_treatedAsText() {
-        // "project/from/to" should not be treated as tags since there are no spaces
         assertThrows(TaskTrackerException.class, () -> {
             Parser.parseEvent("project/from/to");
         });
+    }
+
+    // =========================================================================
+    // FixedDurationTask Tests
+    // =========================================================================
+
+    @Test
+    public void parseFixedDurationTask_validInput_success() throws TaskTrackerException {
+        String input = "study for finals /needs 2 hours";
+        FixedDurationTask task = Parser.parseFixedDurationTask(input);
+
+        assertNotNull(task);
+        assertEquals("study for finals", task.getDescription());
+        assertEquals("2 hours", task.getDuration());
+    }
+
+    @Test
+    public void parseFixedDurationTask_whitespacePadding_trimmedProperly() throws TaskTrackerException {
+        String input = "   workout session    /needs    45 minutes   ";
+        FixedDurationTask task = Parser.parseFixedDurationTask(input);
+
+        assertNotNull(task);
+        assertEquals("workout session", task.getDescription());
+        assertEquals("45 minutes", task.getDuration());
+    }
+
+    @Test
+    public void parseFixedDurationTask_emptyInput_throwsException() {
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask("");
+        });
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask("   ");
+        });
+    }
+
+    @Test
+    public void parseFixedDurationTask_missingNeedsDelimiter_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask("read book 2 hours");
+        });
+        assertEquals(Message.ERR_MISSING_NEEDS, ex.getMessage());
+    }
+
+    @Test
+    public void parseFixedDurationTask_missingDescription_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask(" /needs 2 hours");
+        });
+        assertEquals(Message.ERR_EMPTY_FIXED, ex.getMessage());
+    }
+
+    @Test
+    public void parseFixedDurationTask_emptyDuration_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask("read book /needs ");
+        });
+        assertEquals(Message.ERR_EMPTY_DURATION, ex.getMessage());
+    }
+
+    @Test
+    public void parseFixedDurationTask_containsPipeInDescription_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask("read | book /needs 2 hours");
+        });
+        assertEquals(Message.ERR_NO_DELIMITER, ex.getMessage());
+    }
+
+    @Test
+    public void parseFixedDurationTask_containsPipeInDuration_throwsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask("read book /needs 2 | hours");
+        });
+        assertEquals(Message.ERR_NO_DELIMITER, ex.getMessage());
+    }
+
+    @Test
+    public void parseFixedDurationTask_delimiterWithoutSpaces_throwsMissingNeedsException() {
+        TaskTrackerException ex = assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask("read book/needs 2 hours");
+        });
+        assertEquals(Message.ERR_MISSING_NEEDS, ex.getMessage());
     }
 }
