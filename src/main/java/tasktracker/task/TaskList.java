@@ -34,6 +34,7 @@ public class TaskList {
      * @param savedTasks List of tasks loaded from disk.
      */
     public TaskList(List<Task> savedTasks) {
+        assert savedTasks != null : "Initial saved tasklist should not be null.";
         this.taskList = new ArrayList<>(savedTasks);
     }
 
@@ -43,6 +44,7 @@ public class TaskList {
      * @param tasks Initial tasks to populate the list with.
      */
     public TaskList(Task... tasks) {
+        assert tasks != null : "Initial tasks array should not be null.";
         this.taskList = new ArrayList<>(List.of(tasks));
     }
 
@@ -63,11 +65,14 @@ public class TaskList {
      * @throws TaskTrackerException If the task list has reached MAX_TASKS capacity.
      */
     public String add(Task task) throws TaskTrackerException {
+        assert task != null : "Task to add should not be null.";
         if (taskList.size() >= MAX_TASKS) {
             throw new TaskTrackerException(Message.ERR_TASK_LIST_FULL);
         }
 
+        int initialSize = taskList.size();
         taskList.add(task);
+        assert taskList.size() == initialSize + 1 : "Tasklist size should increase by 1 per add.";
         return Message.MSG_TASK_ADDED + " " + task + NEWLINE
                 + Message.getMsgTaskCount(taskList.size());
     }
@@ -81,8 +86,11 @@ public class TaskList {
      */
     public String deleteTask(int index) throws TaskTrackerException {
         validateIndex(index);
-        Task removedTask = taskList.remove(toZeroBasedIndex(index));
 
+        int initialSize = taskList.size();
+        Task removedTask = taskList.remove(toZeroBasedIndex(index));
+        assert removedTask != null : "Removed task should not be null.";
+        assert taskList.size() = initialSize - 1 : "Tasklist size should decrease by 1 per delete.";
         return Message.MSG_TASK_REMOVED + " " + removedTask + NEWLINE
                 + Message.getMsgTaskCount(taskList.size());
     }
@@ -94,6 +102,7 @@ public class TaskList {
      * @return Formatted string containing all matching tasks, or a message indicating no matches.
      */
     public String findTasks(String keyword) {
+        assert keyword != null : "Search keyword should not be null.";
         List<Task> matchingTasks = filterTasksByKeyword(keyword);
 
         if (matchingTasks.isEmpty()) {
@@ -115,7 +124,7 @@ public class TaskList {
 
         return IntStream.range(0, taskList.size())
                 .mapToObj(i -> (i + 1) + ". " + taskList.get(i))
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining(NEWLINE));
     }
 
     /**
@@ -130,6 +139,7 @@ public class TaskList {
         validateIndex(index);
 
         Task taskToUpdate = taskList.get(index - 1);
+        assert taskToUpdate != null : "Retrieved task to update should not be null.";
 
         if (isDone) {
             taskToUpdate.markAsDone();

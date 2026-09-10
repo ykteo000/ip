@@ -88,6 +88,8 @@ public class Parser {
 
     /**
      * Parses argument into an Event object.
+     * <p>
+     * Note: Gemini AI used to make the parseEvent validation better to handle improper user input.
      *
      * @param argument The raw input string containing the event description, start time, and end time.
      * @return A new Event instance created from the parsed description, start time, and end time.

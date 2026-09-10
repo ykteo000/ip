@@ -47,16 +47,23 @@ public class Storage {
      * @param filePath The path where tasks are saved.
      */
     public Storage(String filePath) {
+        assert filePath != null && !filePath.trim().isEmpty()
+                : "File path for Storage must not be null or blank.";
         this.filePath = filePath;
     }
 
     /**
      * Saves the provided list of tasks to the storage file atomically.
+     * <p>
+     * Writes to a temporary file first and replaces the existing file upon success.
+     * Creates any missing parent directories before writing.
      *
      * @param tasks The list of tasks to be saved.
      * @throws TaskTrackerException If an I/O error occurs while writing to the file.
      */
     public void save(List<Task> tasks) throws TaskTrackerException {
+        assert tasks != null : "Task list to save must not be null.";
+        assert filePath != null && !filePath.trim().isEmpty() : "File path invariant violated.";
         Path targetPath = Paths.get(filePath);
         Path parentDir = targetPath.getParent();
 
@@ -82,6 +89,7 @@ public class Storage {
 
         try (BufferedWriter writer = Files.newBufferedWriter(tempPath)) {
             for (Task task : tasks) {
+                assert task != null : "Cannot serialize a null task to file.";
                 writer.write(task.toFileFormat());
                 writer.newLine();
             }
@@ -110,7 +118,7 @@ public class Storage {
         File file = new File(filePath);
 
         if (!file.exists()) {
-            return loadedTasks;
+            return loadedTasks; // Return empty list if no save file exists yet
         }
 
         try (Scanner scanner = new Scanner(file)) {
