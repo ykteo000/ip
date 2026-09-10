@@ -3,6 +3,7 @@ package tasktracker.parser;
 import tasktracker.exception.TaskTrackerException;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
+import tasktracker.task.FixedDurationTask;
 import tasktracker.task.TaskDateTime;
 import tasktracker.task.ToDo;
 import tasktracker.ui.Message;
@@ -22,6 +23,7 @@ public class Parser {
     private static final String DELIMITER_BY = " /by ";
     private static final String DELIMITER_FROM = " /from ";
     private static final String DELIMITER_TO = " /to ";
+    private static final String DELIMITER_NEEDS = " /needs ";
     private static final String ILLEGAL_STORAGE_DELIMITER = "|";
 
     /**
@@ -112,6 +114,32 @@ public class Parser {
         validateChronology(startDateTime, endDateTime);
 
         return new Event(description, startDateTime, endDateTime);
+    }
+
+    /**
+     * Parses argument into a FixedDurationTask object.
+     *
+     * @param argument The raw input string containing the task description and duration.
+     * @return A new FixedDurationTask instance created from the parsed description and duration.
+     * @throws TaskTrackerException If any field is empty, or if '/needs' is missing.
+     */
+    public static FixedDurationTask parseFixedDurationTask(String argument)
+            throws TaskTrackerException {
+        if (argument == null || argument.trim().isEmpty()) {
+            throw new TaskTrackerException(Message.ERR_EMPTY_FIXED);
+        }
+
+        if (!argument.contains(DELIMITER_NEEDS)) {
+            throw new TaskTrackerException(Message.ERR_MISSING_NEEDS);
+        }
+
+        String[] parts = argument.split(DELIMITER_NEEDS, 2);
+        String description = validateArgument(parts[0], Message.ERR_EMPTY_FIXED);
+        String duration = (parts.length < 2)
+                ? ""
+                : validateArgument(parts[1], Message.ERR_EMPTY_DURATION);
+
+        return new FixedDurationTask(description, duration);
     }
 
     /**

@@ -57,5 +57,13 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getTaskTrackerDialog(response, taskTrackerImage, commandType, isError)
         );
         userInput.clear();
+
+        if (taskTracker.getLastCommandType() == CommandType.BYE) {
+            userInput.setEditable(false);
+            userInput.setDisable(true);
+            sendButton.setDisable(true);
+            userInput.setText("Session ended. Please close window.");
+            userInput.setStyle("-fx-font-size: 14px;");
+        }
     }
 }

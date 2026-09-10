@@ -15,6 +15,7 @@ public enum CommandType {
     TODO,
     DEADLINE,
     EVENT,
+    FIXED,
     DELETE,
     FIND,
     HELP;
@@ -34,4 +35,3 @@ public enum CommandType {
         }
     }
 }
-

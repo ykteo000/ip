@@ -14,6 +14,7 @@ public class Message {
     public static final String SYNTAX_TODO = "todo <description>";
     public static final String SYNTAX_DEADLINE = "deadline <description> /by <due DT>";
     public static final String SYNTAX_EVENT = "event <description> /from <start DT> /to <end DT>";
+    public static final String SYNTAX_FIXED = "fixed <description> /needs <duration>";
     public static final String SYNTAX_FIND = "find <keyword>";
     public static final String SYNTAX_DATE_TIME = "yyyy-MM-dd HHmm(24-H clock)";
     public static final String SYNTAX_VALID_RANGE = "Index range: ";
@@ -46,6 +47,7 @@ public class Message {
             + "  - " + SYNTAX_TODO + " : Adds a todo task\n"
             + "  - " + SYNTAX_DEADLINE + " : Adds a deadline task\n"
             + "  - " + SYNTAX_EVENT + " : Adds an event task\n"
+            + "  - " + SYNTAX_FIXED + " : Adds a fixed duration task\n"
             + "  - " + SYNTAX_INDEX + " : Manipulates task by index\n"
             + "  - " + SYNTAX_FIND + " : Finds event by keyword\n"
             + "  - bye : Exits the program\n"
@@ -61,10 +63,10 @@ public class Message {
     // --- User Input Formats --- //
     public static final String DATE_TIME_FORMAT = SYNTAX_FORMAT + SYNTAX_DATE_TIME + "\n";
     public static final String INDEX_FORMAT = SYNTAX_FORMAT + SYNTAX_INDEX + "\n";
-
     public static final String TODO_FORMAT = SYNTAX_FORMAT + SYNTAX_TODO + "\n";
     public static final String DEADLINE_FORMAT = SYNTAX_FORMAT + SYNTAX_DEADLINE + "\n" + SYNTAX_DATE_TIME + "\n";
     public static final String EVENT_FORMAT = SYNTAX_FORMAT + SYNTAX_EVENT + "\n" + SYNTAX_DATE_TIME + "\n";
+    public static final String FIXED_FORMAT = SYNTAX_FORMAT + SYNTAX_FIXED + "\n";
     public static final String FIND_FORMAT = SYNTAX_FORMAT + SYNTAX_FIND + "\n";
 
     // --- Error Messages --- //
@@ -106,12 +108,21 @@ public class Message {
     public static final String ERR_EVENT_CHRONOLOGY =
             "OOPS!! Event start time cannot be after the end time.\n" + EVENT_FORMAT;
 
+    // Fixed error methods
+    public static final String ERR_EMPTY_FIXED =
+            "The description of a fixed-duration task cannot be empty." + FIXED_FORMAT;
+    public static final String ERR_MISSING_NEEDS =
+            "A fixed-duration task must specify a duration using ' /needs '." + FIXED_FORMAT;
+    public static final String ERR_EMPTY_DURATION =
+            "The duration cannot be empty." + FIXED_FORMAT;
+
     // File error methods
     public static final String ERR_FILE_SAVE = "Failed to save tasks: ";
     public static final String ERR_FILE_LOAD = "Failed to load tasks: ";
     public static final String ERR_FILE_CORRUPT = "Corrupted line in file: ";
     public static final String ERR_FILE_DEADLINE = "Corrupted Deadline entry: ";
     public static final String ERR_FILE_EVENT = "Corrupted Event entry: ";
+    public static final String ERR_FILE_FIXED = "Corrupted fixed-duration task in save file: ";
     public static final String ERR_FILE_UNKNOWN = "Unknown task type in file: ";
 
     // --- Private Constructor --- //
@@ -143,4 +154,3 @@ public class Message {
                 + (count == 0 ? "No tasks available" : "1-" + count) + "\n";
     }
 }
-
