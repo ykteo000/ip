@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import tasktracker.command.CommandType;
 
 /**
@@ -35,8 +36,14 @@ public class DialogBox extends HBox {
             e.printStackTrace();
         }
 
-        dialog.setText(text);
+        dialog.setText(text.trim());
         displayPicture.setImage(img);
+
+        // Ensures bubble height calculates dynamically to fit all text rows
+        dialog.setMinHeight(Region.USE_PREF_SIZE);
+
+        // Binds label max width to the DialogBox container width minus avatar and padding
+        dialog.maxWidthProperty().bind(this.widthProperty().subtract(120.0));
     }
 
     /**
@@ -51,7 +58,9 @@ public class DialogBox extends HBox {
     }
 
     public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+        var db = new DialogBox(text, img);
+        db.dialog.getStyleClass().add("user-label");
+        return db;
     }
 
     private void changeDialogStyle(CommandType commandType, boolean isError) {
@@ -69,6 +78,7 @@ public class DialogBox extends HBox {
             case TODO:
             case DEADLINE:
             case EVENT:
+            case FIXED:
                 dialog.getStyleClass().add("add-label");
                 break;
             case MARK:
@@ -80,9 +90,14 @@ public class DialogBox extends HBox {
             case DELETE:
                 dialog.getStyleClass().add("delete-label");
                 break;
+            case UNDO:
+                dialog.getStyleClass().add("restored-label");
+                break;
+            case HELP:
+                dialog.getStyleClass().add("help-label");
+                break;
             case LIST:
             case FIND:
-            case HELP:
             case BYE:
             default:
                 dialog.getStyleClass().add("info-label");
@@ -90,7 +105,8 @@ public class DialogBox extends HBox {
         }
     }
 
-    public static DialogBox getTaskTrackerDialog(String text, Image img, CommandType commandType, boolean isError) {
+    public static DialogBox getTaskTrackerDialog(String text, Image img,
+                                                 CommandType commandType, boolean isError) {
         var db = new DialogBox(text, img);
         db.flip();
         db.changeDialogStyle(commandType, isError);
