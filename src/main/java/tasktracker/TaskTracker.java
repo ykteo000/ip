@@ -178,8 +178,7 @@ public class TaskTracker {
     }
 
     /**
-     * Legacy Terminal CLI Runner
-     * Runs the main command processing loop until the exit command is received.
+     * Runs the legacy CLI main command processing loop until an exit command is received.
      */
     public void run() {
         ui.showWelcome();
