@@ -303,6 +303,37 @@ public class ParserTest {
         });
     }
 
+    @Test
+    public void parseEvent_invalidCalendarDate_throwsException() {
+        // Non-existent day (Feb 30)
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseEvent("annual retreat /from 2026-02-30 1000 /to 2026-02-30 1800");
+        });
+
+        // 2026 is not a leap year (Feb 29 invalid)
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseEvent("leap meetup /from 2026-02-29 1000 /to 2026-02-29 1200");
+        });
+    }
+
+    @Test
+    public void parseEvent_invalidTimeFormatOrValues_throwsException() {
+        // Hour out of bounds (25:00)
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseEvent("night hackathon /from 2026-10-15 2500 /to 2026-10-16 0200");
+        });
+
+        // Minute out of bounds (60 mins)
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseEvent("standup /from 2026-10-15 0960 /to 2026-10-15 1000");
+        });
+
+        // Non-standard date pattern (slashes instead of dashes)
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseEvent("meeting /from 15/10/2026 1400 /to 15/10/2026 1600");
+        });
+    }
+
     // =========================================================================
     // FixedDurationTask Tests
     // =========================================================================
@@ -383,5 +414,20 @@ public class ParserTest {
             Parser.parseFixedDurationTask("read book/needs 2 hours");
         });
         assertEquals(Message.ERR_MISSING_NEEDS, ex.getMessage());
+    }
+
+    @Test
+    public void parseFixedDurationTask_multipleNeedsDelimiters_handledCorrectly()
+            throws TaskTrackerException {
+        FixedDurationTask task = Parser.parseFixedDurationTask("review /needs notes /needs 2 hours");
+        assertEquals("review", task.getDescription());
+        assertEquals("notes /needs 2 hours", task.getDuration());
+    }
+
+    @Test
+    public void parseFixedDurationTask_spacesOnlyDuration_throwsException() {
+        assertThrows(TaskTrackerException.class, () -> {
+            Parser.parseFixedDurationTask("read book /needs    ");
+        });
     }
 }
