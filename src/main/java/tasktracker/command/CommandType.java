@@ -17,6 +17,7 @@ public enum CommandType {
     EVENT,
     FIXED,
     DELETE,
+    UNDO,
     FIND,
     HELP;
 

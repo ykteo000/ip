@@ -125,6 +125,14 @@ public class Message {
     public static final String ERR_FILE_FIXED = "Corrupted fixed-duration task in save file: ";
     public static final String ERR_FILE_UNKNOWN = "Unknown task type in file: ";
 
+    // Undo method strings
+    public static final String TIP_UNDO =
+            "Accidentally deleted this task? Type 'undo' to restore this task immediately!!";
+    public static final String ERR_NO_UNDO_TASK =
+            "There is no recently deleted task to undo!";
+    public static final String MSG_TASK_RESTORED =
+            "Yayyy!! Brought it right back from the void for you! :D";
+
     // --- Private Constructor --- //
 
     private Message() {

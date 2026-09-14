@@ -14,7 +14,7 @@ import tasktracker.ui.UserInterface;
 
 /**
  * Serves as the entry point and main controller for the application.
- * Manages the user interaction loop until the user chooses to exit.
+ * Manages task workflows, input routing, file persistence, and conversational state.
  */
 public class TaskTracker {
     private static final String DEFAULT_FILE_PATH = "./data/tasks.txt";
@@ -25,7 +25,7 @@ public class TaskTracker {
     private boolean isErrorResponse = false;
 
     /**
-     * Initializes a new TaskTracker instance with initialized UI and TaskList.
+     * Initializes a new TaskTracker instance with default UI, storage, and task list.
      */
     public TaskTracker() {
         this.ui = new UserInterface();
@@ -38,7 +38,9 @@ public class TaskTracker {
     }
 
     /**
-     * Retrieves the welcome message for the GUI.
+     * Retrieves the welcome message for the user interface.
+     *
+     * @return The formatted welcome message string.
      */
     public String getWelcomeMessage() {
         return ui.getWelcomeMessage();
@@ -46,13 +48,17 @@ public class TaskTracker {
 
     /**
      * Returns the command type of the most recently processed command.
+     *
+     * @return The last executed {@link CommandType}.
      */
     public CommandType getLastCommandType() {
         return lastCommandType;
     }
 
     /**
-     * Returns true if the most recent command execution resulted in an exception.
+     * Checks if the most recent command execution resulted in an exception.
+     *
+     * @return True if the last response was an error, false otherwise.
      */
     public boolean isErrorResponse() {
         return isErrorResponse;
@@ -93,12 +99,33 @@ public class TaskTracker {
         CommandType command = CommandType.from(commandWord);
         this.lastCommandType = command;
 
+        manageUndoState(command);
+
         String response = executeCommand(command, argument);
         saveIfMutated(command);
 
         return response;
     }
 
+    /**
+     * Invalidates any cached deletion if an intervening non-delete/non-undo action is run.
+     *
+     * @param command The command type currently executing.
+     */
+    private void manageUndoState(CommandType command) {
+        if (command != CommandType.UNDO && command != CommandType.DELETE) {
+            taskList.clearUndoHistory();
+        }
+    }
+
+    /**
+     * Executes the specific operation associated with the parsed command type.
+     *
+     * @param command  The type of command to execute.
+     * @param argument The argument string passed alongside the command keyword.
+     * @return The resulting output message after execution.
+     * @throws TaskTrackerException If argument validation fails or task execution errors occur.
+     */
     private String executeCommand(CommandType command, String argument) throws TaskTrackerException {
         switch (command) {
             case BYE:
@@ -119,6 +146,8 @@ public class TaskTracker {
                 return handleAddFixedDurationTask(argument);
             case DELETE:
                 return handleDeleteTask(argument);
+            case UNDO:
+                return handleUndoTask();
             case FIND:
                 return taskList.findTasks(Parser.parseFind(argument));
             case HELP:
@@ -158,8 +187,15 @@ public class TaskTracker {
         return taskList.deleteTask(index);
     }
 
+    private String handleUndoTask() throws TaskTrackerException {
+        return taskList.undoDelete();
+    }
+
     /**
      * Persists tasks to disk if the command alters the task list state.
+     *
+     * @param command The command type that was executed.
+     * @throws TaskTrackerException If disk persistence fails.
      */
     private void saveIfMutated(CommandType command) throws TaskTrackerException {
         switch (command) {
@@ -170,6 +206,7 @@ public class TaskTracker {
             case EVENT:
             case FIXED:
             case DELETE:
+            case UNDO:
                 storage.save(taskList.getTasks());
                 break;
             default:

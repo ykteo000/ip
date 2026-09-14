@@ -11,7 +11,7 @@ import tasktracker.ui.Message;
 
 /**
  * Represents a collection of tasks and handles task-level operations such as adding,
- * formatting output, and updating task completion status.
+ * formatting output, updating task completion status, and restoring deleted tasks.
  */
 public class TaskList {
     // Set a limit to 100 to prevent user misuse.
@@ -20,6 +20,8 @@ public class TaskList {
     private static final String ITEM_SEPARATOR = ". ";
 
     private final List<Task> taskList;
+    private Task lastDeletedTask = null;
+    private int lastDeletedIndex = -1;
 
     /**
      * Initializes an empty TaskList.
@@ -78,7 +80,7 @@ public class TaskList {
     }
 
     /**
-     * Deletes a task from the list by its 1-based index.
+     * Deletes a task from the list by its 1-based index and saves it for undo.
      *
      * @param index 1-based index of the task to remove.
      * @return Confirmation message of the deleted task.
@@ -88,10 +90,63 @@ public class TaskList {
         validateIndex(index);
 
         int initialSize = taskList.size();
-        Task removedTask = taskList.remove(toZeroBasedIndex(index));
+        int zeroBasedIndex = toZeroBasedIndex(index);
+        Task removedTask = taskList.remove(zeroBasedIndex);
         assert removedTask != null : "Removed task should not be null.";
         assert taskList.size() == initialSize - 1 : "Tasklist size should decrease by 1 per delete.";
+
+        this.lastDeletedTask = removedTask;
+        this.lastDeletedIndex = zeroBasedIndex;
+
         return Message.MSG_TASK_REMOVED + " " + removedTask + NEWLINE
+                + Message.getMsgTaskCount(taskList.size()) + NEWLINE + NEWLINE
+                + Message.TIP_UNDO;
+    }
+
+    /**
+     * Checks whether there is a recently deleted task available to restore.
+     *
+     * @return True if a deleted task can be restored, false otherwise.
+     */
+    public boolean hasDeletedTaskToUndo() {
+        return lastDeletedTask != null;
+    }
+
+    /**
+     * Clears any remembered deletion state, invalidating future undo attempts.
+     */
+    public void clearUndoHistory() {
+        this.lastDeletedTask = null;
+        this.lastDeletedIndex = -1;
+    }
+
+    /**
+     * Restores the most recently deleted task back to its original position
+     * and clears the undo cache.
+     *
+     * @return Confirmation message of the restored task.
+     * @throws TaskTrackerException If no deleted task exists to undo or the list is full.
+     */
+    public String undoDelete() throws TaskTrackerException {
+        if (!hasDeletedTaskToUndo()) {
+            throw new TaskTrackerException(Message.ERR_NO_UNDO_TASK);
+        }
+        if (taskList.size() >= MAX_TASKS) {
+            throw new TaskTrackerException(Message.ERR_TASK_LIST_FULL);
+        }
+
+        assert lastDeletedTask != null : "Task to restore should not be null.";
+        int restoreIndex = Math.min(lastDeletedIndex, taskList.size());
+        int initialSize = taskList.size();
+
+        taskList.add(restoreIndex, lastDeletedTask);
+        assert taskList.size() == initialSize + 1 : "Tasklist size should increase by 1 per undo restoration.";
+
+        Task restoredTask = lastDeletedTask;
+        clearUndoHistory();
+
+        return Message.MSG_TASK_RESTORED + NEWLINE
+                + "  " + restoredTask + NEWLINE
                 + Message.getMsgTaskCount(taskList.size());
     }
 
