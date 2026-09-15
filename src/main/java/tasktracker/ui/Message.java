@@ -51,7 +51,7 @@ public class Message {
             + "  - " + SYNTAX_EVENT + " : Adds an event task\n"
             + "  - " + SYNTAX_FIXED + " : Adds a fixed duration task\n"
             + "  - " + SYNTAX_INDEX + " : Manipulates task by index\n"
-            + "  - " + SYNTAX_FIND + " : Finds event by keyword\n"
+            + "  - " + SYNTAX_FIND + " : Finds tasks by keyword\n"
             + "  - bye : Exits the program\n"
             + "  - Date and Time (DT) Format: " + SYNTAX_DATE_TIME + "\n";
 
