@@ -8,7 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,6 +25,7 @@ import tasktracker.ui.Message;
 
 /**
  * Handles the loading and saving of task data to and from a local file.
+ * Features atomic writes and resilient line-by-line loading that skips corrupted entries.
  * <p>
  * Note: Gemini AI was used here, especially for the save and load methods.
  * Prompt "I want to save all the user input and list as a log file."
@@ -42,6 +45,7 @@ public class Storage {
     private static final String TEMP_FILE_SUFFIX = ".tmp";
 
     private final String filePath;
+    private final List<String> loadWarnings = new ArrayList<>();
 
     /**
      * Constructs a Storage instance with the specified file path.
@@ -55,10 +59,16 @@ public class Storage {
     }
 
     /**
+     * Returns an unmodifiable list of warning messages generated during the most recent load.
+     *
+     * @return List of warnings detailing skipped corrupted lines.
+     */
+    public List<String> getLoadWarnings() {
+        return Collections.unmodifiableList(loadWarnings);
+    }
+
+    /**
      * Saves the provided list of tasks to the storage file atomically.
-     * <p>
-     * Writes to a temporary file first and replaces the existing file upon success.
-     * Creates any missing parent directories before writing.
      *
      * @param tasks The list of tasks to be saved.
      * @throws TaskTrackerException If an I/O error occurs while writing to the file.
@@ -111,25 +121,33 @@ public class Storage {
 
     /**
      * Loads tasks from the storage file upon application startup.
+     * Skips corrupted lines so valid tasks remain accessible.
      *
-     * @return A list of tasks parsed from the file, or an empty list if no save file exists.
-     * @throws TaskTrackerException If the file contains invalid formatting or an I/O error occurs.
+     * @return A list of tasks successfully parsed from the file.
+     * @throws TaskTrackerException If an unrecoverable I/O error occurs.
      */
     public List<Task> load() throws TaskTrackerException {
         List<Task> loadedTasks = new ArrayList<>();
+        loadWarnings.clear();
         File file = new File(filePath);
 
         if (!file.exists()) {
-            return loadedTasks; // Return empty list if no save file exists yet
+            return loadedTasks;
         }
 
         try (Scanner scanner = new Scanner(file)) {
+            int lineNumber = 0;
             while (scanner.hasNextLine()) {
+                lineNumber++;
                 String line = scanner.nextLine().trim();
                 if (line.isEmpty()) {
                     continue;
                 }
-                loadedTasks.add(parseTaskFromLine(line));
+                try {
+                    loadedTasks.add(parseTaskFromLine(line));
+                } catch (TaskTrackerException e) {
+                    loadWarnings.add("Line " + lineNumber + ": " + line);
+                }
             }
         } catch (IOException e) {
             throw new TaskTrackerException(Message.ERR_FILE_LOAD + e.getMessage());
@@ -137,13 +155,6 @@ public class Storage {
         return loadedTasks;
     }
 
-    /**
-     * Converts a single line from the save file into a corresponding {@code Task} object.
-     *
-     * @param line A single pipe-delimited line from the storage file.
-     * @return The instantiated {@code Task} object with its completion status updated.
-     * @throws TaskTrackerException If the task type is unrecognized or fields are missing.
-     */
     private Task parseTaskFromLine(String line) throws TaskTrackerException {
         String[] parts = line.split(DELIMITER_REGEX);
         if (parts.length < 3) {
@@ -153,6 +164,10 @@ public class Storage {
         String type = parts[0].trim();
         String status = parts[1].trim();
         String description = parts[2].trim();
+
+        if (description.isEmpty()) {
+            throw new TaskTrackerException(Message.ERR_FILE_CORRUPT + line);
+        }
 
         boolean isDone = parseTaskStatus(status, line);
         Task task = instantiateTask(type, description, parts, line);
@@ -196,7 +211,7 @@ public class Storage {
         }
         try {
             return new Deadline(description, new TaskDateTime(parts[3].trim()));
-        } catch (TaskTrackerException e) {
+        } catch (TaskTrackerException | DateTimeParseException | IllegalArgumentException e) {
             throw new TaskTrackerException(Message.ERR_FILE_CORRUPT + line);
         }
     }
@@ -209,7 +224,7 @@ public class Storage {
         try {
             return new Event(description, new TaskDateTime(parts[3].trim()),
                     new TaskDateTime(parts[4].trim()));
-        } catch (TaskTrackerException e) {
+        } catch (TaskTrackerException | DateTimeParseException | IllegalArgumentException e) {
             throw new TaskTrackerException(Message.ERR_FILE_CORRUPT + line);
         }
     }

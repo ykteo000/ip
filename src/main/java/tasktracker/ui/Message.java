@@ -1,5 +1,7 @@
 package tasktracker.ui;
 
+import java.util.List;
+
 /**
  * Container for all user-facing UI messages, application branding elements,
  * and command format error templates.
@@ -160,5 +162,26 @@ public class Message {
     public static String getErrOutOfBounds(int count) {
         return "OOPS!! Task index out of bounds.\n" + INDEX_FORMAT + SYNTAX_VALID_RANGE
                 + (count == 0 ? "No tasks available" : "1-" + count) + "\n";
+    }
+
+    /**
+     * Constructs a warning message detailing corrupted storage records that were bypassed during boot.
+     *
+     * @param skippedLines List of raw lines with line numbers that failed parsing.
+     * @return Formatted warning dialogue for the user.
+     */
+    public static String getLoadWarningMessage(List<String> skippedLines) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("A mortal corruption was detected in the archives!! :< \nPress F to pay respects.\n");
+        sb.append("The following entries could not be resurrected and were skipped:\n\n");
+        for (String entry : skippedLines) {
+            sb.append("  • ").append(entry).append("\n");
+        }
+        sb.append("\nHow to resolve this:\n");
+        sb.append("1. To recover data: Close the app and edit 'data/tasks.txt' to supply missing fields.\n");
+        sb.append("2. To discard corrupted lines: Add, edit or delete any task to overwrite the save file.\n");
+        sb.append("\nYou may right click the message to copy out error lines to paste them somewhere else."
+                + "They cannot be recovered once the data.txt file is overwritten!!\n");
+        return sb.toString().trim();
     }
 }

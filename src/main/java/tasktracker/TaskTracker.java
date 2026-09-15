@@ -1,5 +1,7 @@
 package tasktracker;
 
+import java.util.List;
+
 import tasktracker.command.CommandType;
 import tasktracker.exception.TaskTrackerException;
 import tasktracker.parser.Parser;
@@ -44,6 +46,25 @@ public class TaskTracker {
      */
     public String getWelcomeMessage() {
         return ui.getWelcomeMessage();
+    }
+
+    /**
+     * Checks if any corrupted lines were encountered and skipped during startup storage loading.
+     *
+     * @return True if there are startup load warnings, false otherwise.
+     */
+    public boolean hasStartupWarnings() {
+        return !storage.getLoadWarnings().isEmpty();
+    }
+
+    /**
+     * Formats and returns the warning messages from startup storage loading.
+     *
+     * @return A formatted warning message string detailing skipped records.
+     */
+    public String getStartupWarnings() {
+        List<String> warnings = storage.getLoadWarnings();
+        return Message.getLoadWarningMessage(warnings);
     }
 
     /**
@@ -219,6 +240,10 @@ public class TaskTracker {
      */
     public void run() {
         ui.showWelcome();
+
+        if (hasStartupWarnings()) {
+            ui.showMessage(getStartupWarnings());
+        }
 
         while (true) {
             String input = ui.readCommand().trim();
