@@ -1,12 +1,11 @@
 package tasktracker.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -73,46 +72,82 @@ public class StorageTest {
     }
 
     @Test
-    public void load_corruptedLine_throwsTaskTrackerException() throws IOException {
+    public void load_corruptedLine_skipsAndRecordsWarning() throws Exception {
         File dataFile = tempDir.resolve("corrupted-line.txt").toFile();
         try (FileWriter writer = new FileWriter(dataFile)) {
             writer.write("NOT_A_VALID_FORMAT\n");
         }
 
         Storage storage = new Storage(dataFile.getAbsolutePath());
-        assertThrows(TaskTrackerException.class, storage::load);
+        List<Task> loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertFalse(storage.getLoadWarnings().isEmpty());
+        assertTrue(storage.getLoadWarnings().get(0).contains("Line 1"));
     }
 
     @Test
-    public void load_invalidStatus_throwsTaskTrackerException() throws IOException {
+    public void load_invalidStatus_skipsAndRecordsWarning() throws Exception {
         File dataFile = tempDir.resolve("corrupted-status.txt").toFile();
         try (FileWriter writer = new FileWriter(dataFile)) {
             writer.write("T | 99 | read book\n");
         }
 
         Storage storage = new Storage(dataFile.getAbsolutePath());
-        assertThrows(TaskTrackerException.class, storage::load);
+        List<Task> loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertFalse(storage.getLoadWarnings().isEmpty());
+        assertTrue(storage.getLoadWarnings().get(0).contains("Line 1"));
     }
 
     @Test
-    public void load_unknownType_throwsTaskTrackerException() throws IOException {
+    public void load_unknownType_skipsAndRecordsWarning() throws Exception {
         File dataFile = tempDir.resolve("unknown-type.txt").toFile();
         try (FileWriter writer = new FileWriter(dataFile)) {
             writer.write("X | 0 | unknown type\n");
         }
 
         Storage storage = new Storage(dataFile.getAbsolutePath());
-        assertThrows(TaskTrackerException.class, storage::load);
+        List<Task> loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertFalse(storage.getLoadWarnings().isEmpty());
+        assertTrue(storage.getLoadWarnings().get(0).contains("Line 1"));
     }
 
     @Test
-    public void load_fixedTaskMissingDuration_throwsTaskTrackerException() throws IOException {
+    public void load_fixedTaskMissingDuration_skipsAndRecordsWarning() throws Exception {
         File dataFile = tempDir.resolve("missing-duration.txt").toFile();
         try (FileWriter writer = new FileWriter(dataFile)) {
             writer.write("F | 0 | project\n");
         }
 
         Storage storage = new Storage(dataFile.getAbsolutePath());
-        assertThrows(TaskTrackerException.class, storage::load);
+        List<Task> loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertFalse(storage.getLoadWarnings().isEmpty());
+        assertTrue(storage.getLoadWarnings().get(0).contains("Line 1"));
+    }
+
+    @Test
+    public void load_mixedValidAndCorruptedLines_loadsValidAndRecordsWarnings() throws Exception {
+        File dataFile = tempDir.resolve("mixed-tasks.txt").toFile();
+        try (FileWriter writer = new FileWriter(dataFile)) {
+            writer.write("T | 0 | buy milk\n");
+            writer.write("bad line format\n");
+            writer.write("T | 1 | clean room\n");
+        }
+
+        Storage storage = new Storage(dataFile.getAbsolutePath());
+        List<Task> loadedTasks = storage.load();
+
+        assertEquals(2, loadedTasks.size());
+        assertEquals("buy milk", loadedTasks.get(0).getDescription());
+        assertEquals("clean room", loadedTasks.get(1).getDescription());
+
+        assertEquals(1, storage.getLoadWarnings().size());
+        assertTrue(storage.getLoadWarnings().get(0).contains("Line 2"));
     }
 }

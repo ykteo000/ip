@@ -52,7 +52,8 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Injects the TaskTracker instance and displays the initial welcome greeting.
+     * Injects the TaskTracker instance and displays the initial welcome greeting
+     * along with any startup warning dialogs for corrupted data.
      *
      * @param t The TaskTracker logic engine instance.
      */
@@ -62,6 +63,13 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getTaskTrackerDialog(taskTracker.getWelcomeMessage(),
                         taskTrackerImage, null, false)
         );
+
+        if (taskTracker.hasStartupWarnings()) {
+            dialogContainer.getChildren().add(
+                    DialogBox.getTaskTrackerDialog(taskTracker.getStartupWarnings(),
+                            taskTrackerImage, null, true)
+            );
+        }
     }
 
     /**
