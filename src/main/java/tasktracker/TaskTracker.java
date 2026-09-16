@@ -129,7 +129,10 @@ public class TaskTracker {
     }
 
     /**
-     * Invalidates any cached deletion if an intervening non-delete/non-undo action is run.
+     * Invalidates the cached deletion history when an intervening action is executed.
+     * <p>
+     * Clears any restorable task if the executed command is neither {@code UNDO} nor {@code DELETE}.
+     * Note that subsequent {@code DELETE} commands overwrite the previously cached deletion.
      *
      * @param command The command type currently executing.
      */

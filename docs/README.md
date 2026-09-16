@@ -40,7 +40,7 @@ Type your command into the bottom text field and press **Enter**.
 * `unmark` : Marks a task as incomplete
 * `find` : Finds tasks matching a keyword
 * `delete` : Deletes a task by its index number
-* `undo` : Restores or reverts the most recent modifying action
+* `undo` : Restores recently deleted task
 * `help` : Shows all available commands
 * `bye` : Exits the program
 
@@ -86,7 +86,10 @@ Here are the available commands:
  - deadline <description> /by <due DT> : Adds a deadline task
  - event <description> /from <start DT> /to <end DT> : Adds an event task
  - fixed <description> /needs <duration> : Adds a fixed duration task
- - mark <index> | unmark <index> | delete <index> : Manipulates task by index
+ - mark <index> : Marks a task as completed
+ - unmark <index> : Marks a task as not completed
+ - delete <index> : Deletes a task from the list
+ - undo : Restores the most recently deleted task
  - find <keyword> : Finds tasks by keyword
  - bye : Exits the program
  - Date and Time (DT) Format: yyyy-MM-dd HHmm(24-H clock)
@@ -294,6 +297,9 @@ Yayyy!! Brought it right back from the void for you! :D
 Now you have 4 tasks in the list.
 ```
 
+> **Note:** The undo buffer stores only the single most recently deleted task. Executing any subsequent valid command
+> (e.g., `todo`, `mark`, `delete`, `list`) clears the buffer, making that deletion permanent.
+
 ---
 
 ### 11. Finding Tasks
@@ -332,7 +338,7 @@ bye
 Sample output:
 
 ```text
-Bye. Hope to see you again soon!
+Baiiiiiii!!! Cya soon!
 ```
 
 ---

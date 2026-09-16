@@ -50,7 +50,10 @@ public class Message {
             + "  - " + SYNTAX_DEADLINE + " : Adds a deadline task\n"
             + "  - " + SYNTAX_EVENT + " : Adds an event task\n"
             + "  - " + SYNTAX_FIXED + " : Adds a fixed duration task\n"
-            + "  - " + SYNTAX_INDEX + " : Manipulates task by index\n"
+            + "  - mark <index> : Marks a task as completed\n"
+            + "  - unmark <index> : Marks a task as not completed\n"
+            + "  - delete <index> : Deletes a task from the list\n"
+            + "  - undo : Restores the most recently deleted task\n"
             + "  - " + SYNTAX_FIND + " : Finds tasks by keyword\n"
             + "  - bye : Exits the program\n"
             + "  - Date and Time (DT) Format: " + SYNTAX_DATE_TIME + "\n";
