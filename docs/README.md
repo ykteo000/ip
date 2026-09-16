@@ -1,5 +1,9 @@
 # **TaskTracker - User Guide**
 
+> **Release Version:** `V2.0` (MVP)  
+> **Target Runtime:** Java 25+  
+> **Compatible Artifact:** `TaskTracker.jar`
+
 **TaskTracker** is a desktop task management application tailored for tracking task information.
 
 It targets users who prefer interacting via a Command Line Interface (CLI) while benefiting from a visual Graphical User
@@ -16,7 +20,7 @@ Interface (GUI).
       ```bash
       java -version
       ```
-2. Download the latest `TaskTracker.jar` from the releases page.
+2. Download the latest `TaskTracker.jar` from the [releases page](https://github.com/ykteo000/ip/releases).
 3. Move the JAR file to an empty folder where you want your task archive stored.
 4. Open your terminal, navigate to that directory, and launch the application:
    ```bash
@@ -31,6 +35,7 @@ Type your command into the bottom text field and press **Enter**.
 
 ### Available Commands
 
+* `help` : Shows all available commands
 * `list` : Views all tasks saved
 * `todo` : Adds an untimed general task
 * `deadline` : Adds a task due before `<due DT>`
@@ -38,10 +43,9 @@ Type your command into the bottom text field and press **Enter**.
 * `fixed` : Adds a task with an estimated completion duration
 * `mark` : Marks a task as completed
 * `unmark` : Marks a task as incomplete
-* `find` : Finds tasks matching a keyword
 * `delete` : Deletes a task by its index number
 * `undo` : Restores recently deleted task
-* `help` : Shows all available commands
+* `find` : Finds tasks matching a keyword
 * `bye` : Exits the program
 
 ### Date and Time Format
