@@ -80,7 +80,7 @@ public class DialogBox extends HBox {
 
         // If the box is an error dialogue containing lines, add specific copy option
         if (dialog.getText().contains("Line ")) {
-            MenuItem copyErrorsItem = new MenuItem("Copy Error Lines");
+            MenuItem copyErrorsItem = new MenuItem("Copy Corrupted Lines");
             copyErrorsItem.setOnAction(event -> {
                 Clipboard clipboard = Clipboard.getSystemClipboard();
                 ClipboardContent content = new ClipboardContent();

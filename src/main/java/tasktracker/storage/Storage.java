@@ -17,7 +17,7 @@ import java.util.Scanner;
 import tasktracker.exception.TaskTrackerException;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
-import tasktracker.task.FixedDurationTask;
+import tasktracker.task.Fixed;
 import tasktracker.task.Task;
 import tasktracker.task.TaskDateTime;
 import tasktracker.task.ToDo;
@@ -48,7 +48,7 @@ public class Storage {
     private final List<String> loadWarnings = new ArrayList<>();
 
     /**
-     * Constructs a Storage instance with the specified file path.
+     * Constructs a {@code Storage} instance with the specified file path.
      *
      * @param filePath The path where tasks are saved.
      */
@@ -88,12 +88,26 @@ public class Storage {
         }
     }
 
+    /**
+     * Ensures that the parent directory for the storage file exists.
+     *
+     * @param parentDir Directory path to verify or create.
+     * @throws IOException If directory creation fails.
+     */
     private void ensureDirectoryExists(Path parentDir) throws IOException {
         if (parentDir != null) {
             Files.createDirectories(parentDir);
         }
     }
 
+    /**
+     * Writes serialized task entries into a temporary file prior to atomic move.
+     *
+     * @param parentDir Directory in which to create the temporary file.
+     * @param tasks List of tasks to write.
+     * @return Path to the generated temporary file.
+     * @throws IOException If file creation or writing fails.
+     */
     private Path writeTasksToTempFile(Path parentDir, List<Task> tasks) throws IOException {
         Path tempPath = (parentDir != null)
                 ? Files.createTempFile(parentDir, TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX)
@@ -109,6 +123,13 @@ public class Storage {
         return tempPath;
     }
 
+    /**
+     * Atomically replaces the target save file with the temporary file.
+     *
+     * @param source Temporary source file path.
+     * @param target Final destination file path.
+     * @throws IOException If moving or replacing the file fails.
+     */
     private void replaceTargetFile(Path source, Path target) throws IOException {
         try {
             Files.move(source, target,
@@ -155,6 +176,13 @@ public class Storage {
         return loadedTasks;
     }
 
+    /**
+     * Parses a raw line from the save file into a {@code Task} instance.
+     *
+     * @param line Raw pipe-delimited storage record.
+     * @return Reconstructed task instance.
+     * @throws TaskTrackerException If required fields are missing or corrupted.
+     */
     private Task parseTaskFromLine(String line) throws TaskTrackerException {
         String[] parts = line.split(DELIMITER_REGEX);
         if (parts.length < 3) {
@@ -178,6 +206,14 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Parses the completion status token from a saved record.
+     *
+     * @param status Status string ({@code "0"} or {@code "1"}).
+     * @param line Full record used for error context.
+     * @return {@code true} if completed, {@code false} otherwise.
+     * @throws TaskTrackerException If status code is invalid.
+     */
     private boolean parseTaskStatus(String status, String line) throws TaskTrackerException {
         if (!status.equals(STATUS_NOT_DONE) && !status.equals(STATUS_DONE)) {
             throw new TaskTrackerException(Message.ERR_FILE_CORRUPT + line);
@@ -185,6 +221,16 @@ public class Storage {
         return status.equals(STATUS_DONE);
     }
 
+    /**
+     * Instantiates the appropriate concrete {@code Task} subclass based on the type tag.
+     *
+     * @param type Task type identifier.
+     * @param description Textual description of the task.
+     * @param parts Split parts of the raw file record.
+     * @param line Original record string for error messages.
+     * @return Concrete task instance.
+     * @throws TaskTrackerException If the type tag is unknown or attributes fail parsing.
+     */
     private Task instantiateTask(String type, String description, String[] parts, String line)
             throws TaskTrackerException {
         switch (type) {
@@ -204,6 +250,15 @@ public class Storage {
         }
     }
 
+    /**
+     * Reconstructs a {@code Deadline} task from parsed storage tokens.
+     *
+     * @param description Textual description of the task.
+     * @param parts Split record elements.
+     * @param line Full record string for error diagnostics.
+     * @return Parsed {@code Deadline} instance.
+     * @throws TaskTrackerException If timestamp tokens are missing or invalid.
+     */
     private Deadline createDeadline(String description, String[] parts, String line)
             throws TaskTrackerException {
         if (parts.length < 4) {
@@ -216,6 +271,15 @@ public class Storage {
         }
     }
 
+    /**
+     * Reconstructs an {@code Event} task from parsed storage tokens.
+     *
+     * @param description Textual description of the task.
+     * @param parts Split record elements.
+     * @param line Full record string for error diagnostics.
+     * @return Parsed {@code Event} instance.
+     * @throws TaskTrackerException If time boundaries are missing or invalid.
+     */
     private Event createEvent(String description, String[] parts, String line)
             throws TaskTrackerException {
         if (parts.length < 5) {
@@ -229,7 +293,16 @@ public class Storage {
         }
     }
 
-    private FixedDurationTask createFixedDurationTask(String description, String[] parts, String line)
+    /**
+     * Reconstructs a {@code Fixed} duration task from parsed storage tokens.
+     *
+     * @param description Textual description of the task.
+     * @param parts Split record elements.
+     * @param line Full record string for error diagnostics.
+     * @return Parsed {@code Fixed} instance.
+     * @throws TaskTrackerException If duration field is missing or empty.
+     */
+    private Fixed createFixedDurationTask(String description, String[] parts, String line)
             throws TaskTrackerException {
         if (parts.length < 4) {
             throw new TaskTrackerException(Message.ERR_FILE_FIXED + line);
@@ -238,6 +311,6 @@ public class Storage {
         if (duration.isEmpty()) {
             throw new TaskTrackerException(Message.ERR_FILE_CORRUPT + line);
         }
-        return new FixedDurationTask(description, duration);
+        return new Fixed(description, duration);
     }
 }

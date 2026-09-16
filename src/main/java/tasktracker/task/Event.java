@@ -1,18 +1,18 @@
 package tasktracker.task;
 
 /**
- * Represents an Event task that occurs within a specified start and end time range.
+ * Represents an {@code Event} task that occurs within a specified start and end time range.
  */
 public class Event extends Task {
     private final TaskDateTime from;
     private final TaskDateTime to;
 
     /**
-     * Constructs an Event instance with the specified description, start time, and end time.
+     * Constructs an {@code Event} instance with the specified description, start time, and end time.
      *
      * @param description Text describing the event task.
-     * @param from        Start time or start date description.
-     * @param to          End time or end date description.
+     * @param from Start time or start date description.
+     * @param to End time or end date description.
      */
     public Event(String description, TaskDateTime from, TaskDateTime to) {
         super(description);
@@ -39,24 +39,24 @@ public class Event extends Task {
     }
 
     /**
-     * Returns the formatted string representation of the event task.
-     *
-     * @return String representation containing status, description, start time, and end time.
-     */
-    @Override
-    public String toString() {
-        return "[E]" + super.toString() + " (from: " + from.toDisplayString()
-                + " to: " + to.toDisplayString() + ")";
-    }
-
-    /**
      * Formats the event task for file storage.
      *
-     * @return Pipe-delimited string representing the event task.
+     * @return Pipe-delimited string representing the event task prefixed with {@code "E"}.
      */
     @Override
     public String toFileFormat() {
         return "E | " + toFileFormatPrefix() + " | "
                 + from.toFileString() + " | " + to.toFileString();
+    }
+
+    /**
+     * Returns the formatted string representation of the event task.
+     *
+     * @return String representation containing status, description, and time range prefixed with {@code "[E]"}.
+     */
+    @Override
+    public String toString() {
+        return "[E]" + super.toString() + " (from: " + from.toDisplayString()
+                + " to: " + to.toDisplayString() + ")";
     }
 }

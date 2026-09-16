@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import tasktracker.exception.TaskTrackerException;
-import tasktracker.task.FixedDurationTask;
+import tasktracker.task.Fixed;
 import tasktracker.task.Task;
 import tasktracker.task.ToDo;
 
@@ -48,7 +48,7 @@ public class StorageTest {
 
         assertEquals("project meeting", loadedTasks.get(1).getDescription());
         assertTrue(loadedTasks.get(1).toString().contains("[ ]"));
-        assertTrue(loadedTasks.get(1) instanceof FixedDurationTask);
+        assertTrue(loadedTasks.get(1) instanceof Fixed);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class StorageTest {
         Storage storage = new Storage(savePath.toString());
 
         ToDo todo = new ToDo("submit assignment");
-        FixedDurationTask fixedTask = new FixedDurationTask("read notes", "45 mins");
+        Fixed fixedTask = new Fixed("read notes", "45 mins");
         fixedTask.markAsDone();
 
         storage.save(List.of(todo, fixedTask));

@@ -28,11 +28,11 @@ public class TaskDateTime {
     private final LocalDateTime dateTime;
 
     /**
-     * Constructs a TaskDateTime instance by parsing a raw date-time string.
-     * Supports CLI input format ("yyyy-MM-dd HHmm").
+     * Constructs a {@code TaskDateTime} instance by parsing a raw date-time string.
+     * Supports CLI input format ({@code "yyyy-MM-dd HHmm"}).
      *
      * @param rawDateTime Raw date-time string to parse.
-     * @throws TaskTrackerException If the input string cannot be parsed using supported formats.
+     * @throws TaskTrackerException If the input string is {@code null} or cannot be parsed.
      */
     public TaskDateTime(String rawDateTime) throws TaskTrackerException {
         if (rawDateTime == null) {
@@ -48,9 +48,9 @@ public class TaskDateTime {
     }
 
     /**
-     * Retrieves the underlying LocalDateTime instance.
+     * Retrieves the underlying {@code LocalDateTime} instance.
      *
-     * @return The stored LocalDateTime object.
+     * @return The stored {@code LocalDateTime} object.
      */
     public LocalDateTime getDateTime() {
         return this.dateTime;
@@ -59,15 +59,15 @@ public class TaskDateTime {
     /**
      * Checks if this date-time occurs strictly after another date-time.
      *
-     * @param other The other TaskDateTime to compare against.
-     * @return True if this date-time is after the other date-time, false otherwise.
+     * @param other The other {@code TaskDateTime} to compare against.
+     * @return {@code true} if this date-time is after the other date-time, {code @false} otherwise.
      */
     public boolean isAfter(TaskDateTime other) {
         return this.dateTime.isAfter(other.dateTime);
     }
 
     /**
-     * Formats the date-time into a user-friendly display string (e.g., "Dec 2 2019, 6:00 pm").
+     * Formats the date-time into a user-friendly display string (e.g., {@code "Dec 2 2019, 6:00 pm"}).
      *
      * @return Formatted date-time display string.
      */

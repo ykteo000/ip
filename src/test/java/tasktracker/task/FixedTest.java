@@ -6,13 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class FixedDurationTaskTest {
+public class FixedTest {
 
-    private FixedDurationTask task;
+    private Fixed task;
 
     @BeforeEach
     public void setUp() {
-        task = new FixedDurationTask("gym workout", "1 hour");
+        task = new Fixed("gym workout", "1 hour");
     }
 
     @Test

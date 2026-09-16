@@ -8,7 +8,7 @@ import tasktracker.parser.Parser;
 import tasktracker.storage.Storage;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
-import tasktracker.task.FixedDurationTask;
+import tasktracker.task.Fixed;
 import tasktracker.task.TaskList;
 import tasktracker.task.ToDo;
 import tasktracker.ui.Message;
@@ -27,7 +27,7 @@ public class TaskTracker {
     private boolean isErrorResponse = false;
 
     /**
-     * Initializes a new TaskTracker instance with default UI, storage, and task list.
+     * Initializes a new {@code TaskTracker} instance with default UI, storage, and task list.
      */
     public TaskTracker() {
         this.ui = new UserInterface();
@@ -51,7 +51,7 @@ public class TaskTracker {
     /**
      * Checks if any corrupted lines were encountered and skipped during startup storage loading.
      *
-     * @return True if there are startup load warnings, false otherwise.
+     * @return {@code true} if there are startup load warnings, {@code false} otherwise.
      */
     public boolean hasStartupWarnings() {
         return !storage.getLoadWarnings().isEmpty();
@@ -79,7 +79,7 @@ public class TaskTracker {
     /**
      * Checks if the most recent command execution resulted in an exception.
      *
-     * @return True if the last response was an error, false otherwise.
+     * @return {@code true} if the last response was an error, {@code false} otherwise.
      */
     public boolean isErrorResponse() {
         return isErrorResponse;
@@ -142,7 +142,7 @@ public class TaskTracker {
     /**
      * Executes the specific operation associated with the parsed command type.
      *
-     * @param command  The type of command to execute.
+     * @param command The type of command to execute.
      * @param argument The argument string passed alongside the command keyword.
      * @return The resulting output message after execution.
      * @throws TaskTrackerException If argument validation fails or task execution errors occur.
@@ -178,36 +178,85 @@ public class TaskTracker {
         }
     }
 
+    /**
+     * Updates the status of a task to done or undone.
+     *
+     * @param argument Raw task index string from input.
+     * @param isDone {@code true} to mark complete, {@code false} to unmark.
+     * @return Confirmation message of the task status update.
+     * @throws TaskTrackerException If the index is invalid or out of bounds.
+     */
     private String handleTaskStatusChange(String argument, boolean isDone) throws TaskTrackerException {
         int index = Parser.parseIndex(argument);
         return taskList.setTaskStatus(index, isDone);
     }
 
+    /**
+     * Creates and adds a new {@code ToDo} task.
+     *
+     * @param argument Raw task argument string.
+     * @return Confirmation message of the added task.
+     * @throws TaskTrackerException If argument validation fails.
+     */
     private String handleAddToDo(String argument) throws TaskTrackerException {
         ToDo toDo = Parser.parseToDo(argument);
         return taskList.add(toDo);
     }
 
+    /**
+     * Creates and adds a new {@code Deadline} task.
+     *
+     * @param argument Raw task argument string with due date.
+     * @return Confirmation message of the added task.
+     * @throws TaskTrackerException If argument or date validation fails.
+     */
     private String handleAddDeadline(String argument) throws TaskTrackerException {
         Deadline deadline = Parser.parseDeadline(argument);
         return taskList.add(deadline);
     }
 
+    /**
+     * Creates and adds a new {@code Event} task.
+     *
+     * @param argument Raw task argument string with time range.
+     * @return Confirmation message of the added task.
+     * @throws TaskTrackerException If argument or date-time range validation fails.
+     */
     private String handleAddEvent(String argument) throws TaskTrackerException {
         Event event = Parser.parseEvent(argument);
         return taskList.add(event);
     }
 
+    /**
+     * Creates and adds a new {@code Fixed} duration task.
+     *
+     * @param argument Raw task argument string with duration details.
+     * @return Confirmation message of the added task.
+     * @throws TaskTrackerException If argument validation fails.
+     */
     private String handleAddFixedDurationTask(String argument) throws TaskTrackerException {
-        FixedDurationTask fixedTask = Parser.parseFixedDurationTask(argument);
+        Fixed fixedTask = Parser.parseFixedDurationTask(argument);
         return taskList.add(fixedTask);
     }
 
+    /**
+     * Deletes a task from the list by its index.
+     *
+     * @param argument Raw task index string from input.
+     * @return Confirmation message of the removed task.
+     * @throws TaskTrackerException If index is invalid or out of bounds.
+     */
     private String handleDeleteTask(String argument) throws TaskTrackerException {
         int index = Parser.parseIndex(argument);
         return taskList.deleteTask(index);
     }
 
+    /**
+     * Restores the most recently deleted task.
+     *
+     * @return Confirmation message of the restored task.
+     * @throws TaskTrackerException If there is no task available to restore.
+     */
     private String handleUndoTask() throws TaskTrackerException {
         return taskList.undoDelete();
     }

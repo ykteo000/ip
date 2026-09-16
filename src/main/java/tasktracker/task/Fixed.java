@@ -5,30 +5,29 @@ package tasktracker.task;
  * Unlike deadlines or events, a fixed-duration task is not tied to a specific
  * calendar date or time window, only a required duration.
  */
-public class FixedDurationTask extends Task {
+public class Fixed extends Task {
     /** The duration required to complete the task. */
     private final String duration;
 
     /**
-     * Constructs an uncompleted {@code FixedDurationTask} with the given description and duration.
+     * Constructs an uncompleted {@code Fixed} with the given description and duration.
      *
      * @param description The textual details of the task.
-     * @param duration The duration needed to complete the task (e.g., "2 hours").
+     * @param duration The estimated duration needed to complete the task (e.g., {@code "2 hours"}).
      */
-    public FixedDurationTask(String description, String duration) {
+    public Fixed(String description, String duration) {
         super(description);
         this.duration = duration;
     }
 
     /**
-     * Constructs a {@code FixedDurationTask} with the given description, duration, and completion status.
-     * Typically used when reconstructing tasks from persistent storage.
+     * Constructs a {@code Fixed} with the given description, duration, and completion status.
      *
      * @param description The textual details of the task.
      * @param duration The duration needed to complete the task.
      * @param isDone The completion status of the task.
      */
-    public FixedDurationTask(String description, String duration, boolean isDone) {
+    public Fixed(String description, String duration, boolean isDone) {
         super(description);
         this.duration = duration;
         if (isDone) {
@@ -48,7 +47,7 @@ public class FixedDurationTask extends Task {
     /**
      * Formats the task details into a delimited string suitable for file storage.
      *
-     * @return The serialized string representation for file persistence.
+     * @return The serialized string representing the fixed task prefixed with {@code "F"}.
      */
     @Override
     public String toFileFormat() {
@@ -58,7 +57,7 @@ public class FixedDurationTask extends Task {
     /**
      * Returns the formatted string representation of the fixed-duration task for display to the user.
      *
-     * @return A string containing the task type indicator, status icon, description, and required duration.
+     * @return A string containing status, description, and required approximate duration prefixed with {@code "[F]"}.
      */
     @Override
     public String toString() {

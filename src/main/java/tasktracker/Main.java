@@ -9,12 +9,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- * A GUI for TaskTracker using FXML.
+ * Sets up and displays the graphical user interface for {@code TaskTracker} using FXML.
  */
 public class Main extends Application {
 
     private final TaskTracker taskTracker = new TaskTracker();
 
+    /**
+     * Initializes and displays the primary application stage with FXML views.
+     *
+     * @param stage Primary stage container provided by the JavaFX runtime.
+     */
     @Override
     public void start(Stage stage) {
         try {

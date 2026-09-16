@@ -24,14 +24,14 @@ public class TaskList {
     private int lastDeletedIndex = -1;
 
     /**
-     * Initializes an empty TaskList.
+     * Initializes an empty {@code TaskList}.
      */
     public TaskList() {
         this.taskList = new ArrayList<>();
     }
 
     /**
-     * Initializes a TaskList with preloaded tasks (from Storage).
+     * Initializes a {@code TaskList} with preloaded tasks (from {@code Storage}).
      *
      * @param savedTasks List of tasks loaded from disk.
      */
@@ -41,7 +41,7 @@ public class TaskList {
     }
 
     /**
-     * Initializes a TaskList with an arbitrary number of initial tasks.
+     * Initializes a {@code TaskList} with an arbitrary number of initial tasks.
      *
      * @param tasks Initial tasks to populate the list with.
      */
@@ -53,7 +53,7 @@ public class TaskList {
     /**
      * Returns the underlying list of tasks for saving.
      *
-     * @return List of current tasks.
+     * @return Unmodifiable list of current tasks.
      */
     public List<Task> getTasks() {
         return Collections.unmodifiableList(taskList);
@@ -64,7 +64,7 @@ public class TaskList {
      *
      * @param task Task to be added.
      * @return Message confirming addition of the task.
-     * @throws TaskTrackerException If the task list has reached MAX_TASKS capacity.
+     * @throws TaskTrackerException If the task list has reached {@code MAX_TASKS} capacity.
      */
     public String add(Task task) throws TaskTrackerException {
         assert task != null : "Task to add should not be null.";
@@ -106,7 +106,7 @@ public class TaskList {
     /**
      * Checks whether there is a recently deleted task available to restore.
      *
-     * @return True if a deleted task can be restored, false otherwise.
+     * @return {@code true} if a deleted task can be restored, {@code false} otherwise.
      */
     public boolean hasDeletedTaskToUndo() {
         return lastDeletedTask != null;
@@ -186,7 +186,7 @@ public class TaskList {
      * Sets the status of a task identified by its 1-based index.
      *
      * @param index  1-based task index.
-     * @param isDone True to mark as done, false to mark as undone.
+     * @param isDone {@code true} to mark as done, {@code false} to mark as undone.
      * @return Confirmation message of the updated task status.
      * @throws TaskTrackerException If the task index is out of bounds.
      */
@@ -219,6 +219,9 @@ public class TaskList {
 
     /**
      * Converts a 1-based index into an internal 0-based collection index.
+     *
+     * @param oneBasedIndex The 1-based index supplied by user input.
+     * @return The corresponding 0-based index.
      */
     private int toZeroBasedIndex(int oneBasedIndex) {
         return oneBasedIndex - 1;
@@ -226,6 +229,8 @@ public class TaskList {
 
     /**
      * Filters tasks whose descriptions match the provided keyword (case-insensitive).
+     * @param keyword Substring to search within task descriptions.
+     * @return List of matching tasks.
      */
     private List<Task> filterTasksByKeyword(String keyword) {
         String lowerKeyword = keyword.toLowerCase();
@@ -236,6 +241,9 @@ public class TaskList {
 
     /**
      * Formats a list of tasks into a numbered string representation.
+     *
+     * @param tasks List of tasks to format.
+     * @return Formatted numbered list string.
      */
     private String formatNumberedList(List<Task> tasks) {
         return IntStream.range(0, tasks.size())

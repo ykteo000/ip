@@ -3,7 +3,7 @@ package tasktracker.task;
 /**
  * Represents a generic task in the application.
  * <p>
- * Serves as the base class for specific task types like ToDo, Deadline, and Event.
+ * Serves as the base class for specific task types like {@code ToDo}, {@code Deadline}, and {@code Event}.
  * <p>
  * Credits: Skeleton class template provided from CS2103T website.
  */
@@ -12,7 +12,7 @@ public abstract class Task {
     private boolean isDone;
 
     /**
-     * Constructs a Task instance with specified description and sets completion status to false.
+     * Constructs a {@code Task} instance with specified description and sets completion status to {@code false}.
      *
      * @param description Text describing the task.
      */
@@ -24,7 +24,7 @@ public abstract class Task {
     /**
      * Gets the completion status icon representing whether the task is done.
      *
-     * @return String "X" if done, or a single space if undone.
+     * @return String {@code "X"} if done, or a single space if undone.
      */
     public String getStatusIcon() {
         return (isDone ? "X" : " "); // mark done task with X
@@ -62,6 +62,8 @@ public abstract class Task {
 
     /**
      * Returns the common prefix for disk serialization.
+     *
+     * @return A pipe-delimited string containing the completion flag and task description.
      */
     protected String toFileFormatPrefix() {
         return (this.isDone ? "1" : "0") + " | " + this.description;

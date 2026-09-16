@@ -53,7 +53,15 @@ Format:  yyyy-MM-dd HHmm
 Example: 2026-09-30 2359 (interpreted as September 30, 2026, 11:59 PM)
 ```
 
-> Note: Date validation is strict; invalid calendar days and leap years are strictly checked.
+> **Note:** Date validation is strict; invalid calendar days and leap years are strictly checked.
+
+### Editing Previous Commands
+
+Made a typo? Enter `>` into the input box to instantly retrieve and edit your last typed command without having to
+retype the whole line.
+
+> **Note:** The prompt to use `>` appears whenever an invalid command is entered. Successfully executed commands run
+> their operations immediately with the provided parameters.
 
 ---
 
@@ -344,8 +352,8 @@ protects the rest of your list rather than crashing.
 
 ### How to Recover Corrupted Lines
 
-1. **Copy the Line:** Right-click the error bubble in the chat window and select **Copy Corrupted Line** (or copy all
-   text) to save your notes to your system clipboard.
+1. **Copy the Line:** Right-click the error bubble in the chat window and select **Copy Corrupted Lines** (or Copy Full
+   Message) to save your notes to your system clipboard.
 2. **Fix Before Modifying:** If you execute any command that modifies the list (such as `todo` or `delete`), TaskTracker
    rewrites `data/tasks.txt` with only the valid tasks currently in memory. Make sure to copy any unreadable text
    beforehand so you can re-add it cleanly via the CLI.
@@ -401,8 +409,7 @@ If a line fails to load, check the copied text against these typical mistakes:
 * The original concept is named in honor of **Duke**, the Java Mascot (courtesy of Oracle / Sun Microsystems).
 * GUI framework and architectural structure adapted from the [se-edu/duke](https://github.com/se-edu/duke) tutorial
   project.
-* **AI Usage:** Gemini Flash 3.8 was used as an interactive guidance agent and sounding board for this project. 
-  Ideas on extending
-  the project scope, design trade-offs, and final code implementations were driven by myself (a human, thankfully, or at
-  least I hope). All code and documentation were produced through deliberate human iteration, manual refinement, and
-  testing rather than pure automation.
+* **AI Usage:** Gemini Flash 3.8 was used as an interactive guidance agent and sounding board for this project. Ideas on
+  extending the project scope, design trade-offs, and final code implementations were driven by myself (a human,
+  thankfully, or at least I hope). All code and documentation were produced through deliberate human iteration, manual
+  refinement, and testing rather than pure automation.

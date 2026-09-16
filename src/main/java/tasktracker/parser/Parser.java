@@ -3,7 +3,7 @@ package tasktracker.parser;
 import tasktracker.exception.TaskTrackerException;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
-import tasktracker.task.FixedDurationTask;
+import tasktracker.task.Fixed;
 import tasktracker.task.TaskDateTime;
 import tasktracker.task.ToDo;
 import tasktracker.ui.Message;
@@ -54,10 +54,10 @@ public class Parser {
     }
 
     /**
-     * Parses argument into a ToDo object.
+     * Parses argument into a {@code ToDo} object.
      *
      * @param argument The raw input string containing the todo description.
-     * @return A new ToDo instance created from the parsed description.
+     * @return A new {@code ToDo} instance created from the parsed description.
      * @throws TaskTrackerException If the description is empty or missing.
      */
     public static ToDo parseToDo(String argument) throws TaskTrackerException {
@@ -66,11 +66,11 @@ public class Parser {
     }
 
     /**
-     * Parses argument into a Deadline object.
+     * Parses argument into a {@code Deadline} object.
      *
      * @param argument The raw input string containing the deadline description and date.
-     * @return A new Deadline instance created from the parsed description and by-date.
-     * @throws TaskTrackerException If the description or date is empty, or if '/by' is missing.
+     * @return A new {@code Deadline} instance created from the parsed description and by-date.
+     * @throws TaskTrackerException If the description or date is empty, or if {@code "/by"} is missing.
      */
     public static Deadline parseDeadline(String argument) throws TaskTrackerException {
         String trimmed = validateArgument(argument, Message.ERR_EMPTY_DEADLINE);
@@ -89,13 +89,13 @@ public class Parser {
     }
 
     /**
-     * Parses argument into an Event object.
+     * Parses argument into an {@code Event} object.
      * <p>
      * Note: Gemini AI used to make the parseEvent validation better to handle improper user input.
      *
      * @param argument The raw input string containing the event description, start time, and end time.
-     * @return A new Event instance created from the parsed description, start time, and end time.
-     * @throws TaskTrackerException If any field is empty, or if '/from' or '/to' specifiers are missing.
+     * @return A new {@code Event} instance created from the parsed description, start time, and end time.
+     * @throws TaskTrackerException If any field is empty, or if {@code "/from"} or {@code "/to"} flags are missing.
      */
     public static Event parseEvent(String argument) throws TaskTrackerException {
         String trimmed = validateArgument(argument, Message.ERR_EMPTY_EVENT);
@@ -117,13 +117,13 @@ public class Parser {
     }
 
     /**
-     * Parses argument into a FixedDurationTask object.
+     * Parses argument into a {@code Fixed} object.
      *
      * @param argument The raw input string containing the task description and duration.
-     * @return A new FixedDurationTask instance created from the parsed description and duration.
-     * @throws TaskTrackerException If any field is empty, or if '/needs' is missing.
+     * @return A new {@code Fixed} instance created from the parsed description and duration.
+     * @throws TaskTrackerException If any field is empty, or if {@code "/needs"} is missing.
      */
-    public static FixedDurationTask parseFixedDurationTask(String argument)
+    public static Fixed parseFixedDurationTask(String argument)
             throws TaskTrackerException {
         if (argument == null || argument.trim().isEmpty()) {
             throw new TaskTrackerException(Message.ERR_EMPTY_FIXED);
@@ -139,16 +139,16 @@ public class Parser {
                 ? ""
                 : validateArgument(parts[1], Message.ERR_EMPTY_DURATION);
 
-        return new FixedDurationTask(description, duration);
+        return new Fixed(description, duration);
     }
 
     /**
-     * Ensures an argument string is non-empty after trimming.
+     * Ensures an argument string is non-empty after trimming and contains no illegal delimiters.
      *
-     * @param argument     The raw argument string to check.
+     * @param argument The raw argument string to check.
      * @param errorMessage The exception message to throw if validation fails.
      * @return The trimmed, non-empty argument string.
-     * @throws TaskTrackerException If the argument is null or empty after trimming.
+     * @throws TaskTrackerException If the argument is null, empty after trimming, or contains illegal characters.
      */
     private static String validateArgument(String argument, String errorMessage)
             throws TaskTrackerException {
@@ -162,7 +162,10 @@ public class Parser {
     }
 
     /**
-     * Checks that the '/from' delimiter appears before the '/to' delimiter if both are present.
+     * Checks that the {@code "/from"} delimiter appears before the {@code "/to"} delimiter if both exist.
+     *
+     * @param argument Raw argument string to inspect.
+     * @throws TaskTrackerException If delimiters appear out of chronological order.
      */
     private static void validateEventOrder(String argument) throws TaskTrackerException {
         boolean hasFrom = argument.contains(DELIMITER_FROM);
@@ -175,6 +178,10 @@ public class Parser {
 
     /**
      * Ensures that the event start time does not occur after the end time.
+     *
+     * @param start Parsed starting date-time.
+     * @param end Parsed ending date-time.
+     * @throws TaskTrackerException If start time occurs strictly after end time.
      */
     private static void validateChronology(TaskDateTime start, TaskDateTime end)
             throws TaskTrackerException {
@@ -184,7 +191,11 @@ public class Parser {
     }
 
     /**
-     * Extracts and validates start and end time strings from the portion after '/from'.
+     * Extracts and validates start and end time strings from the portion after {@code "/from"}.
+     *
+     * @param afterFrom Substring of event arguments following the start-time flag.
+     * @return Two-element array containing trimmed start and end time strings.
+     * @throws TaskTrackerException If boundary tokens are missing or invalid.
      */
     private static String[] extractEventTimes(String afterFrom) throws TaskTrackerException {
         if (!afterFrom.contains(DELIMITER_TO)) {

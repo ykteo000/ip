@@ -165,7 +165,7 @@ public class Message {
     }
 
     /**
-     * Constructs a warning message detailing corrupted storage records that were bypassed during boot.
+     * Constructs a warning message detailing corrupted storage records that were bypassed during load.
      *
      * @param skippedLines List of raw lines with line numbers that failed parsing.
      * @return Formatted warning dialogue for the user.
@@ -180,7 +180,7 @@ public class Message {
         sb.append("\nHow to resolve this:\n");
         sb.append("1. To recover data: Close the app and edit 'data/tasks.txt' to supply missing fields.\n");
         sb.append("2. To discard corrupted lines: Add, edit or delete any task to overwrite the save file.\n");
-        sb.append("\nYou may right click the message to copy out error lines to paste them somewhere else."
+        sb.append("\nYou may right click the message to copy out corrupted lines and paste them somewhere else."
                 + "They cannot be recovered once the data.txt file is overwritten!!\n");
         return sb.toString().trim();
     }

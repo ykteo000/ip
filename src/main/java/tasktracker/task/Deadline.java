@@ -7,10 +7,10 @@ public class Deadline extends Task {
     private final TaskDateTime by;
 
     /**
-     * Constructs a Deadline instance with the specified description and deadline time.
+     * Constructs a {@code Deadline} instance with the specified description and deadline time.
      *
      * @param description Text describing the deadline task.
-     * @param by          Due date or time string.
+     * @param by Due date or time string.
      */
     public Deadline(String description, TaskDateTime by) {
         super(description);
@@ -27,22 +27,22 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns the formatted string representation of the deadline task.
-     *
-     * @return String representation containing status, description, and due date.
-     */
-    @Override
-    public String toString() {
-        return "[D]" + super.toString() + " (by: " + by.toDisplayString() + ")";
-    }
-
-    /**
      * Formats the deadline task for file storage.
      *
-     * @return Pipe-delimited string representing the deadline task.
+     * @return Pipe-delimited string representing the deadline task prefixed with {@code "D"}.
      */
     @Override
     public String toFileFormat() {
         return "D | " + toFileFormatPrefix() + " | " + by.toFileString();
+    }
+
+    /**
+     * Returns the formatted string representation of the deadline task.
+     *
+     * @return String representation containing status, description, and due date prefixed with {@code "[D]"}.
+     */
+    @Override
+    public String toString() {
+        return "[D]" + super.toString() + " (by: " + by.toDisplayString() + ")";
     }
 }

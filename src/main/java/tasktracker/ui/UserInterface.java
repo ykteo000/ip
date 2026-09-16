@@ -14,14 +14,14 @@ public class UserInterface {
     private final Scanner scanner;
 
     /**
-     * Initializes a new UserInterface instance with a System.in scanner.
+     * Initializes a new {@code UserInterface} instance configured with a {@code System.in} scanner.
      */
     public UserInterface() {
         this.scanner = new Scanner(System.in);
     }
 
     /**
-     * Retrieves the welcome message text for GUI.
+     * Retrieves the welcome message text for the GUI.
      *
      * @return The formatted welcome message.
      */
@@ -30,7 +30,7 @@ public class UserInterface {
     }
 
     /**
-     * Retrieves the goodbye message text for GUI.
+     * Retrieves the goodbye message text for the GUI.
      *
      * @return The formatted goodbye message.
      */
@@ -39,7 +39,7 @@ public class UserInterface {
     }
 
     /**
-     * Displays the welcome message and application banner for CLI.
+     * Displays the welcome message and application banner for CLI mode.
      */
     public void showWelcome() {
         System.out.println(Message.BANNER);
@@ -80,7 +80,7 @@ public class UserInterface {
     }
 
     /**
-     * Displays the farewell message upon exiting the application for CLI.
+     * Displays the farewell message upon exiting the application for CLI mode.
      */
     public void showGoodbye() {
         System.out.println(Message.BANNER);

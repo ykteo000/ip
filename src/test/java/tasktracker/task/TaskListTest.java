@@ -17,13 +17,13 @@ public class TaskListTest {
 
     private TaskList taskList;
     private ToDo sampleTodo;
-    private FixedDurationTask sampleFixedTask;
+    private Fixed sampleFixedTask;
 
     @BeforeEach
     public void setUp() {
         taskList = new TaskList(new ArrayList<>());
         sampleTodo = new ToDo("read documentation");
-        sampleFixedTask = new FixedDurationTask("gym workout", "1 hour");
+        sampleFixedTask = new Fixed("gym workout", "1 hour");
     }
 
     // =========================================================================

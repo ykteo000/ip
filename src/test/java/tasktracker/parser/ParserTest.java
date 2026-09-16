@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import tasktracker.exception.TaskTrackerException;
 import tasktracker.task.Deadline;
 import tasktracker.task.Event;
-import tasktracker.task.FixedDurationTask;
+import tasktracker.task.Fixed;
 import tasktracker.task.ToDo;
 import tasktracker.ui.Message;
 
@@ -341,7 +341,7 @@ public class ParserTest {
     @Test
     public void parseFixedDurationTask_validInput_success() throws TaskTrackerException {
         String input = "study for finals /needs 2 hours";
-        FixedDurationTask task = Parser.parseFixedDurationTask(input);
+        Fixed task = Parser.parseFixedDurationTask(input);
 
         assertNotNull(task);
         assertEquals("study for finals", task.getDescription());
@@ -351,7 +351,7 @@ public class ParserTest {
     @Test
     public void parseFixedDurationTask_whitespacePadding_trimmedProperly() throws TaskTrackerException {
         String input = "   workout session    /needs    45 minutes   ";
-        FixedDurationTask task = Parser.parseFixedDurationTask(input);
+        Fixed task = Parser.parseFixedDurationTask(input);
 
         assertNotNull(task);
         assertEquals("workout session", task.getDescription());
@@ -419,7 +419,7 @@ public class ParserTest {
     @Test
     public void parseFixedDurationTask_multipleNeedsDelimiters_handledCorrectly()
             throws TaskTrackerException {
-        FixedDurationTask task = Parser.parseFixedDurationTask("review /needs notes /needs 2 hours");
+        Fixed task = Parser.parseFixedDurationTask("review /needs notes /needs 2 hours");
         assertEquals("review", task.getDescription());
         assertEquals("notes /needs 2 hours", task.getDuration());
     }
