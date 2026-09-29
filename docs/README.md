@@ -1,6 +1,7 @@
 # **TaskTracker - User Guide**
 
 > **Release Version:** `V2.0` (MVP)  
+> t
 > **Target Runtime:** Java 25+  
 > **Compatible Artifact:** `TaskTracker.jar`
 
@@ -329,7 +330,9 @@ Here are the matching tasks in your list:
 
 ### 12. Exiting the Program
 
-Terminates and closes the application window cleanly.
+Terminates the application by preventing further user input. You can still view all previous message interactions. 
+Once terminal is closed by user, only the updated list is saved and editable on subsequent runs of the TaskTracker 
+application.
 
 * **Format:** `bye`
 

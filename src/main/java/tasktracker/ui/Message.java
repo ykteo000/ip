@@ -184,7 +184,7 @@ public class Message {
         sb.append("1. To recover data: Close the app and edit 'data/tasks.txt' to supply missing fields.\n");
         sb.append("2. To discard corrupted lines: Add, edit or delete any task to overwrite the save file.\n");
         sb.append("\nYou may right click the message to copy out corrupted lines and paste them somewhere else."
-                + "They cannot be recovered once the data.txt file is overwritten!!\n");
+                + " They cannot be recovered once the data.txt file is overwritten!!\n");
         return sb.toString().trim();
     }
 }
